@@ -5,7 +5,6 @@
   --leos-black: #1e1e1e;
   --leos-white: #ffffff;
   --leos-cream: #f6f1e8;
-  --leos-border: rgba(201, 161, 93, 0.3);
 }
 
 * {
@@ -14,7 +13,6 @@
 
 html {
   scroll-behavior: smooth;
-  background: var(--leos-white);
 }
 
 body {
@@ -34,50 +32,24 @@ h6,
   font-family: var(--font-heading), Georgia, serif;
 }
 
+a,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-img {
-  max-width: 100%;
+button {
+  cursor: pointer;
 }
 
 ::selection {
   background: var(--leos-gold);
   color: var(--leos-black);
-}
-
-.footer-heading {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--leos-gold);
-}
-
-.leos-container {
-  width: min(100% - 2.5rem, 1440px);
-  margin-inline: auto;
-}
-
-.leos-eyebrow {
-  color: var(--leos-gold);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.leos-gold-line {
-  width: 3rem;
-  height: 1px;
-  background: var(--leos-gold);
 }

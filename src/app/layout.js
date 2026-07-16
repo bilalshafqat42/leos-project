@@ -1,12 +1,12 @@
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Inter, Libre_Baskerville } from "next/font/google";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import "./globals.css";
 
-const headingFont = Cormorant_Garamond({
+const headingFont = Libre_Baskerville({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
