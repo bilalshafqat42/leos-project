@@ -529,10 +529,10 @@ export default function Header() {
             <Image
               src="/logos/leos-logo-gold.svg"
               alt="LEOS Project Management"
-              width={64}
-              height={64}
+              width={82}
+              height={93}
               priority
-              className="h-[48px] w-[48px] object-contain sm:h-[52px] sm:w-[52px] lg:h-[58px] lg:w-[58px]"
+              className="h-[56px] w-auto object-contain sm:h-[62px] lg:h-[70px]"
             />
           </Link>
 

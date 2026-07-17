@@ -34,12 +34,16 @@ const About = forwardRef(function About({ className = "" }, ref) {
 
           <div className={styles.metrics} aria-label="LEOS service highlights">
             <div>
-              <strong>UAE</strong>
-              <span>Project delivery</span>
+              <strong>500+</strong>
+              <span>Projects Delivered</span>
             </div>
             <div>
-              <strong>360°</strong>
-              <span>Management</span>
+              <strong>10+</strong>
+              <span>Years in UAE</span>
+            </div>
+            <div>
+              <strong>100%</strong>
+              <span>Satisfaction</span>
             </div>
           </div>
         </div>
@@ -47,27 +51,14 @@ const About = forwardRef(function About({ className = "" }, ref) {
 
       <div className={styles.rightPanel} data-about-right>
         <div className={styles.mediaVisual} data-about-media-visual>
-          <span className={styles.mediaIndex}>01 / LEOS</span>
-
           <Image
-            src="/logos/leos-logo-gold.svg"
-            alt=""
-            width={556}
-            height={631}
-            className={styles.watermark}
+            src="/images/about.avif"
+            alt="LEOS construction and project management team at work"
+            fill
+            quality={88}
+            sizes="(max-width: 767px) 100vw, 50vw"
+            className={styles.aboutImage}
           />
-
-          <div className={styles.blueprint} aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-
-          <div className={styles.mediaCaption}>
-            <span>Project photography</span>
-            <strong>Reserved for your imagery</strong>
-          </div>
         </div>
       </div>
     </section>
