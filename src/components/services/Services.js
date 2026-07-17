@@ -1,142 +1,124 @@
 "use client";
 
 import { useRef } from "react";
+
 import { gsap, useGSAP } from "@/lib/gsap";
+import styles from "@/styles/sections.module.css";
 
 const services = [
   {
+    number: "01",
     title: "Renovation & Fit-Out",
     description:
-      "From villas to apartments and offices, we coordinate every detail to deliver a seamless renovation experience.",
+      "Complete transformations for villas, apartments, offices and retail environments—from strip-out to final styling.",
+    scope: "Residential · Commercial · Retail",
   },
   {
+    number: "02",
+    title: "Construction",
+    description:
+      "Disciplined site delivery with experienced trades, transparent coordination and uncompromising quality control.",
+    scope: "Civil Works · MEP · Finishes",
+  },
+  {
+    number: "03",
     title: "Project Management",
     description:
-      "Professional site supervision, budget oversight and schedule control that keeps projects on track.",
+      "One accountable team managing scope, schedule, procurement, budget and communication from concept to handover.",
+    scope: "Planning · Supervision · Handover",
   },
   {
+    number: "04",
     title: "Interior Delivery",
     description:
-      "Design-led finishes, furniture coordination and technical handover for spaces that feel polished and complete.",
+      "Design-led material, joinery, lighting and furniture coordination for spaces that feel resolved and ready to use.",
+    scope: "Design Support · FF&E · Styling",
   },
 ];
 
 export default function Services() {
   const sectionRef = useRef(null);
-  const cardRefs = useRef([]);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const cards = cardRefs.current;
+      if (!section) return undefined;
 
-      if (!section || !cards.length) {
-        return undefined;
-      }
-
+      const intro = section.querySelectorAll("[data-section-intro]");
+      const rows = section.querySelectorAll("[data-service-row]");
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (reduceMotion) {
-        gsap.set(cards, {
-          autoAlpha: 1,
-          y: 0,
-        });
-
-        gsap.set(section.querySelectorAll("[data-section-item]"), {
-          autoAlpha: 1,
-          y: 0,
-        });
-
+        gsap.set([...intro, ...rows], { autoAlpha: 1, y: 0 });
         return undefined;
       }
 
       const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
+        scrollTrigger: { trigger: section, start: "top 76%" },
       });
 
       timeline
         .fromTo(
-          section.querySelectorAll("[data-section-item]"),
-          {
-            autoAlpha: 0,
-            y: 28,
-          },
+          intro,
+          { autoAlpha: 0, y: 30 },
           {
             autoAlpha: 1,
             y: 0,
             duration: 0.9,
-            stagger: 0.14,
+            stagger: 0.1,
             ease: "power3.out",
           },
         )
         .fromTo(
-          cards,
-          {
-            autoAlpha: 0,
-            y: 24,
-            scale: 0.98,
-          },
+          rows,
+          { autoAlpha: 0, y: 34 },
           {
             autoAlpha: 1,
             y: 0,
-            scale: 1,
-            duration: 0.9,
-            stagger: 0.12,
+            duration: 0.85,
+            stagger: 0.11,
             ease: "power3.out",
           },
-          "-=0.6",
+          "-=0.5",
         );
 
-      return () => {
-        timeline.kill();
-      };
+      return () => timeline.kill();
     },
-    {
-      scope: sectionRef,
-    },
+    { scope: sectionRef },
   );
 
   return (
-    <section
-      id="services"
-      ref={sectionRef}
-      className="bg-[#f6f1e8] text-[#1e1e1e]"
-    >
-      <div className="mx-auto max-w-[1440px] px-5 py-20 sm:px-8 lg:px-12">
-        <div className="max-w-3xl" data-section-item>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.32em] text-[#c9a15d]">
-            Our Services
+    <section id="services" ref={sectionRef} className={styles.services}>
+      <div className={styles.container}>
+        <div className={styles.sectionHead}>
+          <p className={styles.eyebrow} data-section-intro>
+            Our Expertise
           </p>
-          <h2 className="text-4xl font-serif font-normal leading-tight sm:text-5xl">
-            Built around your goals, delivered with precision.
+          <h2 className={styles.sectionTitle} data-section-intro>
+            One Team. Every Detail. Complete Delivery.
           </h2>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-[#1e1e1e]/75">
-            We provide clear planning, experienced execution and transparent
-            communication across every renovation, fit-out and construction
-            project.
+          <p className={styles.sectionLead} data-section-intro>
+            Integrated services shaped around your brief, with clear ownership
+            from the first decision to the final finish.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {services.map((service, index) => (
+        <div className={styles.serviceList}>
+          {services.map((service) => (
             <article
-              key={service.title}
-              ref={(element) => {
-                if (element) cardRefs.current[index] = element;
-              }}
-              className="rounded-[40px] border border-[#1e1e1e]/10 bg-white/95 p-8 shadow-[0_32px_80px_rgba(30,30,30,0.08)]"
+              key={service.number}
+              className={styles.serviceRow}
+              data-service-row
             >
-              <h3 className="text-xl font-semibold tracking-tight text-[#1e1e1e]">
-                {service.title}
-              </h3>
-              <p className="mt-4 text-sm leading-7 text-[#1e1e1e]/75">
-                {service.description}
-              </p>
+              <span className={styles.serviceNumber}>{service.number}</span>
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <span className={styles.serviceScope}>{service.scope}</span>
+              <span className={styles.serviceArrow} aria-hidden="true">
+                ↗
+              </span>
             </article>
           ))}
         </div>

@@ -1,0 +1,66 @@
+.heroAboutScene {
+  position: relative;
+  width: 100%;
+  height: 300svh;
+  background: var(--leos-black);
+}
+
+.stickyViewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--leos-black);
+}
+
+.heroLayer,
+.aboutLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heroLayer {
+  z-index: 1;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.aboutLayer {
+  z-index: 2;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .heroAboutScene {
+    height: 260svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroAboutScene {
+    height: auto;
+  }
+
+  .stickyViewport {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .heroLayer,
+  .aboutLayer {
+    position: relative;
+    inset: auto;
+    min-height: 100svh;
+    transform: none !important;
+  }
+
+  .aboutLayer {
+    pointer-events: auto;
+  }
+}

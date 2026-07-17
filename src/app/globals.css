@@ -7,12 +7,15 @@
   --leos-cream: #f6f1e8;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  background: var(--leos-black);
 }
 
 body {
@@ -20,6 +23,11 @@ body {
   background: var(--leos-white);
   color: var(--leos-black);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  overflow-x: clip;
+}
+
+main {
+  overflow: clip;
 }
 
 h1,
@@ -47,6 +55,18 @@ a {
 
 button {
   cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 1px solid var(--leos-gold);
+  outline-offset: 4px;
 }
 
 ::selection {

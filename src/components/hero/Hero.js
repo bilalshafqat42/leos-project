@@ -17,9 +17,9 @@ export default function Hero() {
   const handleScrollDown = useCallback((event) => {
     event.preventDefault();
 
-    const aboutSection = document.getElementById("about");
+    const scene = document.getElementById("hero-about-scene");
 
-    if (!aboutSection) {
+    if (!scene) {
       return;
     }
 
@@ -27,10 +27,7 @@ export default function Hero() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const headerHeight = 88;
-
-    const destination =
-      aboutSection.getBoundingClientRect().top + window.scrollY - headerHeight;
+    const destination = scene.offsetTop + scene.offsetHeight - window.innerHeight;
 
     window.scrollTo({
       top: Math.max(0, destination),
@@ -247,13 +244,13 @@ export default function Hero() {
         <p className={styles.eyebrow}>LEOS Project Management</p>
 
         <h1 id="hero-title" className={styles.title}>
-          Thoughtful Spaces.
-          <span>Built With Precision.</span>
+          Building With Purpose.
+          <span>Delivering With Precision.</span>
         </h1>
 
         <p className={styles.description}>
-          Renovation, fit-out and project management solutions delivered with
-          quality, clarity and attention to every detail.
+          Renovation, fit-out, construction and project management across the
+          UAE—delivered through one trusted team.
         </p>
 
         <a href="#contact" className={styles.action}>

@@ -68,6 +68,19 @@ export default function Header() {
         return;
       }
 
+      if (href === "#about") {
+        const scene = document.getElementById("hero-about-scene");
+
+        if (scene) {
+          window.scrollTo({
+            top: scene.offsetTop + scene.offsetHeight - window.innerHeight,
+            behavior,
+          });
+
+          return;
+        }
+      }
+
       const target = document.querySelector(href);
 
       if (!target) {
@@ -617,7 +630,7 @@ export default function Header() {
           aria-label="Close navigation menu"
           onClick={() => closeMenu()}
           tabIndex={menuOpen ? 0 : -1}
-          className="relative hidden h-full border-0 bg-[#151515] bg-[linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.68)),url('/images/menu-construction.jpg')] bg-cover bg-center p-0 lg:block"
+          className="relative hidden h-full border-0 bg-[#151515] bg-[linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.7)),url('/images/hero.avif')] bg-cover bg-center p-0 lg:block"
         >
           <span className="absolute inset-x-12 bottom-14 border-l border-[#C9A15D] pl-6 text-left">
             <span className="block text-[12px] font-semibold uppercase tracking-[0.16em] text-[#C9A15D]">

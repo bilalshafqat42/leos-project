@@ -1,0 +1,54 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--leos-black);
+  color: var(--leos-white);
+  clip-path: inset(0);
+}
+
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 7%;
+  border: 1px solid rgb(201 161 93 / 18%);
+}
+
+.logoWrap {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+}
+
+.logo {
+  width: 86px;
+  height: auto;
+}
+
+.line {
+  display: block;
+  width: 170px;
+  height: 1px;
+  background: var(--leos-gold);
+  transform-origin: center;
+}
+
+.label {
+  position: absolute;
+  bottom: 9%;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 38%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    display: none;
+  }
+}

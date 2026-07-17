@@ -18,44 +18,55 @@ const About = forwardRef(function About({ className = "" }, ref) {
           <p className={styles.eyebrow}>About LEOS</p>
 
           <h2 id="about-title" className={styles.title}>
-            From Vision To A Space Built Better.
+            We Turn Ambitious Ideas Into Spaces Built To Last.
           </h2>
 
           <p className={styles.description}>
-            We manage renovation, fit-out and construction projects with clear
-            planning, skilled execution and attention to every detail.
+            LEOS brings planning, construction and project management together
+            under one accountable team. From the first site visit to the final
+            handover, every detail is managed with clarity and care.
           </p>
 
           <a href="#services" className={styles.link}>
-            <span>Explore Our Services</span>
+            <span>Explore Our Expertise</span>
+            <span aria-hidden="true">↗</span>
           </a>
+
+          <div className={styles.metrics} aria-label="LEOS service highlights">
+            <div>
+              <strong>UAE</strong>
+              <span>Project delivery</span>
+            </div>
+            <div>
+              <strong>360°</strong>
+              <span>Management</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div
-        className={styles.rightPanel}
-        data-about-right
-        data-about-media
-      >
-        <Image
-          src="/images/about/leos-about.jpg"
-          alt="Modern interior renovation managed by LEOS Project Management"
-          fill
-          quality={92}
-          sizes="(max-width: 767px) 100vw, 50vw"
-          className={styles.image}
-        />
+      <div className={styles.rightPanel} data-about-right>
+        <div className={styles.mediaVisual} data-about-media-visual>
+          <span className={styles.mediaIndex}>01 / LEOS</span>
 
-        <div className={styles.imageOverlay} aria-hidden="true" />
+          <Image
+            src="/logos/leos-logo-gold.svg"
+            alt=""
+            width={556}
+            height={631}
+            className={styles.watermark}
+          />
 
-        <div className={styles.imageCaption} data-about-caption>
-          <span className={styles.captionNumber}>01</span>
+          <div className={styles.blueprint} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
 
-          <div>
-            <p className={styles.captionTitle}>Thoughtful Planning</p>
-            <p className={styles.captionText}>
-              From concept through completion.
-            </p>
+          <div className={styles.mediaCaption}>
+            <span>Project photography</span>
+            <strong>Reserved for your imagery</strong>
           </div>
         </div>
       </div>
