@@ -1,11 +1,12 @@
 import Hero from "@/components/hero/Hero";
+import About from "@/components/about/About";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
 
-      <section
+      {/* <section
         id="about"
         className="flex min-h-[70vh] items-center justify-center bg-[#F6F1E8] px-5 text-center"
       >
@@ -16,7 +17,8 @@ export default function HomePage() {
             About section will come next.
           </h2>
         </div>
-      </section>
+      </section> */}
+      <About />
     </>
   );
 }
