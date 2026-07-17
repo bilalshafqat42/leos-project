@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 
+import { services } from "@/data/services";
 import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "@/styles/sections.module.css";
 
@@ -100,10 +101,9 @@ export default function Contact() {
                 <option value="" disabled>
                   Select a service
                 </option>
-                <option>Renovation & Fit-Out</option>
-                <option>Construction</option>
-                <option>Project Management</option>
-                <option>Interior Delivery</option>
+                {services.map((service) => (
+                  <option key={service.number}>{service.title}</option>
+                ))}
               </select>
             </label>
 

@@ -3,47 +3,9 @@
 import Image from "next/image";
 import { useRef } from "react";
 
+import { services } from "@/data/services";
 import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "./Services.module.css";
-
-const services = [
-  {
-    number: "01",
-    title: "Renovation & Fit-Out",
-    description:
-      "Complete transformations for villas, apartments, offices and retail environments—from strip-out to final styling.",
-    scope: "Residential · Commercial · Retail",
-    image: "/images/about.avif",
-    imagePosition: "center",
-  },
-  {
-    number: "02",
-    title: "Construction",
-    description:
-      "Disciplined site delivery with experienced trades, transparent coordination and uncompromising quality control.",
-    scope: "Civil Works · MEP · Finishes",
-    image: "/images/hero.avif",
-    imagePosition: "58% center",
-  },
-  {
-    number: "03",
-    title: "Project Management",
-    description:
-      "One accountable team managing scope, schedule, procurement, budget and communication from concept to handover.",
-    scope: "Planning · Supervision · Handover",
-    image: "/images/about.avif",
-    imagePosition: "72% center",
-  },
-  {
-    number: "04",
-    title: "Interior Delivery",
-    description:
-      "Design-led material, joinery, lighting and furniture coordination for spaces that feel resolved and ready to use.",
-    scope: "Design Support · FF&E · Styling",
-    image: "/images/hero.avif",
-    imagePosition: "72% center",
-  },
-];
 
 export default function Services() {
   const sectionRef = useRef(null);
@@ -62,14 +24,13 @@ export default function Services() {
       const images = gsap.utils.toArray(
         section.querySelectorAll("[data-service-image]"),
       );
-      const progressFills = gsap.utils.toArray(
-        section.querySelectorAll("[data-progress-fill]"),
-      );
+      const progressFill = section.querySelector("[data-progress-fill]");
 
       if (
         copies.length !== services.length ||
         mediaPanels.length !== services.length ||
-        images.length !== services.length
+        images.length !== services.length ||
+        !progressFill
       ) {
         return undefined;
       }
@@ -139,11 +100,10 @@ export default function Services() {
           });
           gsap.set(images[0], { scale: 1.035, yPercent: 0 });
 
-          gsap.set(progressFills, {
-            scaleX: 0,
-            transformOrigin: "left center",
+          gsap.set(progressFill, {
+            scaleY: 0,
+            transformOrigin: "top center",
           });
-          gsap.set(progressFills[0], { scaleX: 1 });
 
           const timeline = gsap.timeline({
             defaults: { ease: "none" },
@@ -163,8 +123,20 @@ export default function Services() {
             },
           });
 
+          timeline.to(
+            progressFill,
+            {
+              scaleY: 1,
+              duration: services.length - 1,
+            },
+            0,
+          );
+
           for (let index = 1; index < services.length; index += 1) {
             const position = index - 1;
+            const mediaStart = position + 0.18;
+            const copyExit = position + 0.56;
+            const copyEnter = position + 0.64;
             const previousCopy = copies[index - 1];
             const nextCopy = copies[index];
             const previousImage = images[index - 1];
@@ -177,57 +149,48 @@ export default function Services() {
                 {
                   autoAlpha: 0,
                   y: -48,
-                  duration: 0.32,
+                  duration: 0.22,
                   ease: "power2.in",
                 },
-                position,
+                copyExit,
               )
               .to(
                 nextPanel,
                 {
                   clipPath: "inset(0% 0% 0% 0%)",
-                  duration: 0.78,
+                  duration: 0.7,
                   ease: "power3.inOut",
                 },
-                position,
+                mediaStart,
               )
               .to(
                 previousImage,
                 {
                   scale: 1.075,
                   yPercent: -5,
-                  duration: 0.82,
+                  duration: 0.76,
                 },
-                position,
+                mediaStart,
               )
               .to(
                 nextImage,
                 {
                   scale: 1.02,
                   yPercent: 0,
-                  duration: 0.95,
+                  duration: 0.82,
                   ease: "power2.out",
                 },
-                position,
+                mediaStart,
               )
               .to(
                 nextCopy,
                 {
                   autoAlpha: 1,
                   y: 0,
-                  duration: 0.48,
+                  duration: 0.28,
                   ease: "power3.out",
                 },
-                position + 0.28,
-              )
-              .to(
-                progressFills[index],
-                {
-                  scaleX: 1,
-                  duration: 0.42,
-                  ease: "power2.out",
-                },
-                position + 0.28,
+                copyEnter,
               );
           }
 
@@ -241,7 +204,12 @@ export default function Services() {
   );
 
   return (
-    <section id="services" ref={sectionRef} className={styles.services}>
+    <section
+      id="services"
+      ref={sectionRef}
+      className={styles.services}
+      style={{ "--service-count": services.length }}
+    >
       <div className={styles.stickyViewport}>
         {services.map((service, index) => (
           <article
@@ -284,14 +252,11 @@ export default function Services() {
         ))}
 
         <div className={styles.progress} aria-hidden="true">
-          {services.map((service) => (
-            <div key={service.number} className={styles.progressItem}>
-              <span>{service.number}</span>
-              <i>
-                <b data-progress-fill />
-              </i>
-            </div>
-          ))}
+          <span>01</span>
+          <i>
+            <b data-progress-fill />
+          </i>
+          <span>{services[services.length - 1].number}</span>
         </div>
       </div>
     </section>
