@@ -229,7 +229,7 @@ export default function Hero() {
     >
       <div ref={imageRef} className={styles.imageWrapper}>
         <Image
-          src="/images/hero/leos-hero.jpg"
+          src="/images/hero.avif"
           alt="Premium renovation and construction project by LEOS Project Management"
           fill
           priority
