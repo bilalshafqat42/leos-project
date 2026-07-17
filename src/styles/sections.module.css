@@ -29,7 +29,7 @@
   max-width: 820px;
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(42px, 5vw, 82px);
+  font-size: var(--type-section);
   font-weight: 400;
   line-height: 1.02;
   letter-spacing: -0.04em;
@@ -108,7 +108,7 @@
 .serviceRow h3 {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(25px, 2.3vw, 38px);
+  font-size: var(--type-card);
   font-weight: 400;
   line-height: 1.1;
 }
@@ -277,7 +277,7 @@
 .projectCopy h3 {
   margin: 14px 0 16px;
   font-family: var(--font-heading);
-  font-size: clamp(24px, 2.3vw, 36px);
+  font-size: var(--type-card);
   font-weight: 400;
   line-height: 1.16;
 }
@@ -329,7 +329,7 @@
 .processStep h3 {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(27px, 3vw, 45px);
+  font-size: var(--type-card);
   font-weight: 400;
 }
 
@@ -358,7 +358,7 @@
   max-width: 630px;
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(46px, 5.6vw, 86px);
+  font-size: var(--type-section);
   font-weight: 400;
   line-height: 1.01;
   letter-spacing: -0.045em;
@@ -557,7 +557,7 @@
 
   .sectionTitle,
   .sectionTitleLight {
-    font-size: clamp(38px, 11vw, 54px);
+    font-size: var(--type-section);
   }
 
   .serviceRow {
@@ -599,7 +599,7 @@
   }
 
   .contactIntro h2 {
-    font-size: clamp(43px, 12.5vw, 62px);
+    font-size: var(--type-section);
   }
 
   .form {

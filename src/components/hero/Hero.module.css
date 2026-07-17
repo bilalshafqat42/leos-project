@@ -128,7 +128,7 @@
   margin: 0;
 
   font-family: var(--font-heading);
-  font-size: clamp(52px, 5.4vw, 42px);
+  font-size: var(--type-display);
   font-weight: 400;
   line-height: 0.98;
   letter-spacing: -0.04em;
@@ -332,7 +332,7 @@
   .title {
     max-width: 650px;
 
-    font-size: clamp(52px, 8vw, 78px);
+    font-size: var(--type-display);
   }
 
   .description {
@@ -405,7 +405,7 @@
   .title {
     max-width: 520px;
 
-    font-size: clamp(40px, 11.5vw, 58px);
+    font-size: var(--type-display);
     line-height: 0.98;
     letter-spacing: -0.04em;
   }
@@ -457,7 +457,7 @@
   }
 
   .title {
-    font-size: clamp(39px, 12.5vw, 53px);
+    font-size: var(--type-display);
   }
 
   .description {
@@ -488,7 +488,7 @@
   }
 
   .title {
-    font-size: clamp(50px, 6vw, 32px);
+    font-size: var(--type-display);
   }
 
   .description {
