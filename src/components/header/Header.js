@@ -6,19 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { gsap, useGSAP } from "@/lib/gsap";
 
-const leftNavigation = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-];
-
-const rightNavigation = [
-  { label: "Projects", href: "#projects" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
-];
-
-const menuNavigation = [
+const navigation = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
@@ -47,17 +35,12 @@ export default function Header() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
-  /*
-   * Header background after scrolling.
-   */
   useEffect(() => {
     const handleScroll = () => {
-      const nextScrolledState = window.scrollY > 50;
+      const nextState = window.scrollY > 50;
 
       setScrolled((currentState) =>
-        currentState === nextScrolledState
-          ? currentState
-          : nextScrolledState,
+        currentState === nextState ? currentState : nextState,
       );
     };
 
@@ -72,9 +55,6 @@ export default function Header() {
     };
   }, []);
 
-  /*
-   * Smooth section navigation.
-   */
   const scrollToSection = useCallback(
     (href) => {
       const reduceMotion = prefersReducedMotion();
@@ -95,8 +75,7 @@ export default function Header() {
       }
 
       const currentHeaderHeight =
-        headerRef.current?.getBoundingClientRect().height ??
-        HEADER_HEIGHT;
+        headerRef.current?.getBoundingClientRect().height ?? HEADER_HEIGHT;
 
       const destination =
         target.getBoundingClientRect().top +
@@ -119,23 +98,21 @@ export default function Header() {
     [scrollToSection],
   );
 
-  /*
-   * Initial header entrance.
-   */
   useGSAP(
     () => {
-      if (!headerRef.current) {
+      const header = headerRef.current;
+
+      if (!header) {
         return undefined;
       }
 
       const reduceMotion = prefersReducedMotion();
 
       const headerItems = gsap.utils.toArray(
-        headerRef.current.querySelectorAll("[data-header-item]"),
+        header.querySelectorAll("[data-header-item]"),
       );
 
-      const headerLine =
-        headerRef.current.querySelector("[data-header-line]");
+      const headerLine = header.querySelector("[data-header-line]");
 
       if (reduceMotion) {
         gsap.set(headerItems, {
@@ -161,13 +138,13 @@ export default function Header() {
           headerItems,
           {
             autoAlpha: 0,
-            y: -18,
+            y: -16,
           },
           {
             autoAlpha: 1,
             y: 0,
             duration: 0.8,
-            stagger: 0.08,
+            stagger: 0.1,
           },
         )
         .fromTo(
@@ -193,9 +170,6 @@ export default function Header() {
     },
   );
 
-  /*
-   * Establish the closed menu state once.
-   */
   useGSAP(
     () => {
       const menu = menuRef.current;
@@ -239,9 +213,6 @@ export default function Header() {
     },
   );
 
-  /*
-   * Open full-screen navigation.
-   */
   const openMenu = useCallback(() => {
     const menu = menuRef.current;
 
@@ -302,7 +273,6 @@ export default function Header() {
       defaults: {
         overwrite: "auto",
       },
-
       onComplete: () => {
         closeButtonRef.current?.focus({
           preventScroll: true,
@@ -354,9 +324,6 @@ export default function Header() {
     menuTimelineRef.current = timeline;
   }, [menuOpen, prefersReducedMotion]);
 
-  /*
-   * Close full-screen navigation.
-   */
   const closeMenu = useCallback(
     (afterClose) => {
       const menu = menuRef.current;
@@ -486,9 +453,6 @@ export default function Header() {
     [closeMenu, scrollToSection],
   );
 
-  /*
-   * Escape key closes navigation.
-   */
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape" && menuOpen) {
@@ -503,9 +467,6 @@ export default function Header() {
     };
   }, [closeMenu, menuOpen]);
 
-  /*
-   * Restore page scrolling on unmount.
-   */
   useEffect(() => {
     return () => {
       menuTimelineRef.current?.kill();
@@ -520,10 +481,10 @@ export default function Header() {
   return (
     <>
       <header ref={headerRef} className={headerClassName}>
-        <div className="mx-auto grid h-[88px] w-full max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+        <div className="mx-auto grid h-[88px] w-full max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center px-5 sm:px-8 lg:px-12">
           <div
             data-header-item
-            className="flex min-w-0 items-center gap-6 xl:gap-8"
+            className="flex items-center justify-self-start"
           >
             <button
               ref={menuButtonRef}
@@ -532,33 +493,17 @@ export default function Header() {
               aria-expanded={menuOpen}
               aria-controls="leos-navigation-menu"
               onClick={openMenu}
-              className="group flex min-h-11 shrink-0 items-center gap-3 border-0 bg-transparent p-0 text-white outline-none focus-visible:ring-1 focus-visible:ring-[#C9A15D]"
+              className="group flex min-h-11 items-center gap-3 border-0 bg-transparent p-0 text-white outline-none focus-visible:ring-1 focus-visible:ring-[#C9A15D]"
             >
-              <span
-                aria-hidden="true"
-                className="flex w-7 flex-col gap-[6px]"
-              >
+              <span aria-hidden="true" className="flex w-7 flex-col gap-[6px]">
                 <span className="h-px w-7 bg-[#C9A15D] transition-transform duration-300 group-hover:translate-x-1" />
                 <span className="h-px w-5 bg-[#C9A15D] transition-all duration-300 group-hover:w-7" />
               </span>
 
-              <span className="hidden text-[12px] font-medium uppercase tracking-[0.16em] sm:inline">
+              <span className="text-[12px] font-medium uppercase tracking-[0.16em]">
                 Menu
               </span>
             </button>
-
-            <nav
-              aria-label="Left navigation"
-              className="hidden items-center gap-6 xl:flex 2xl:gap-9"
-            >
-              {leftNavigation.map((item) => (
-                <HeaderLink
-                  key={item.href}
-                  item={item}
-                  onNavigate={handleNavigation}
-                />
-              ))}
-            </nav>
           </div>
 
           <Link
@@ -578,35 +523,17 @@ export default function Header() {
             />
           </Link>
 
-          <div
-            data-header-item
-            className="flex min-w-0 items-center justify-end gap-6 xl:gap-8"
-          >
-            <nav
-              aria-label="Right navigation"
-              className="hidden items-center gap-6 xl:flex 2xl:gap-9"
-            >
-              {rightNavigation.map((item) => (
-                <HeaderLink
-                  key={item.href}
-                  item={item}
-                  onNavigate={handleNavigation}
-                />
-              ))}
-            </nav>
-
+          <div data-header-item className="flex items-center justify-self-end">
             <Link
               href="#contact"
-              onClick={(event) =>
-                handleNavigation(event, "#contact")
-              }
-              className="inline-flex min-h-11 shrink-0 items-center justify-center bg-[#C9A15D] px-5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#1E1E1E] transition-all duration-300 hover:bg-white sm:px-6 sm:text-[12px] xl:min-h-12 xl:px-7"
+              onClick={(event) => handleNavigation(event, "#contact")}
+              className="group inline-flex min-h-11 items-center justify-center border border-[#C9A15D] bg-transparent px-5 text-[11px] font-semibold uppercase tracking-[0.12em] !text-[#C9A15D] transition-all duration-300 ease-out hover:bg-[#C9A15D] hover:!text-[#1E1E1E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A15D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1E1E] sm:px-6 sm:text-[12px] xl:min-h-12 xl:px-7"
             >
-              <span className="hidden sm:inline">
-                Book Free Site Visit
-              </span>
+              <span className="transition-transform duration-300 group-hover:-translate-y-px">
+                <span className="hidden sm:inline">Book Free Site Visit</span>
 
-              <span className="sm:hidden">Contact</span>
+                <span className="sm:hidden">Contact</span>
+              </span>
             </Link>
           </div>
         </div>
@@ -637,10 +564,7 @@ export default function Header() {
               tabIndex={menuOpen ? 0 : -1}
               className="group relative flex h-12 w-12 items-center justify-center border border-white/20 bg-transparent text-white transition-colors duration-300 hover:border-[#C9A15D] hover:text-[#C9A15D]"
             >
-              <span
-                aria-hidden="true"
-                className="relative h-6 w-6"
-              >
+              <span aria-hidden="true" className="relative h-6 w-6">
                 <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 rotate-45 bg-current transition-transform duration-500 group-hover:rotate-[135deg]" />
                 <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 -rotate-45 bg-current transition-transform duration-500 group-hover:rotate-45" />
               </span>
@@ -660,13 +584,11 @@ export default function Header() {
             className="flex min-h-0 flex-1 items-center py-5 sm:py-7 lg:py-8"
           >
             <ul className="m-0 flex list-none flex-col gap-2 p-0 sm:gap-3">
-              {menuNavigation.map((item, index) => (
+              {navigation.map((item, index) => (
                 <li key={item.href} data-menu-link>
                   <a
                     href={item.href}
-                    onClick={(event) =>
-                      handleMenuNavigation(event, item.href)
-                    }
+                    onClick={(event) => handleMenuNavigation(event, item.href)}
                     tabIndex={menuOpen ? 0 : -1}
                     className="group flex items-center gap-4 font-serif text-[clamp(2rem,4.4vw,4.35rem)] leading-[1.02] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none"
                   >
@@ -709,24 +631,5 @@ export default function Header() {
         </button>
       </div>
     </>
-  );
-}
-
-function HeaderLink({ item, onNavigate }) {
-  return (
-    <Link
-      href={item.href}
-      onClick={(event) =>
-        onNavigate(event, item.href)
-      }
-      className="group relative whitespace-nowrap text-[12px] font-medium uppercase tracking-[0.13em] text-white transition-colors duration-300 hover:text-[#C9A15D] 2xl:text-[13px]"
-    >
-      {item.label}
-
-      <span
-        aria-hidden="true"
-        className="absolute -bottom-2 left-0 h-px w-full origin-right scale-x-0 bg-[#C9A15D] transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100"
-      />
-    </Link>
   );
 }

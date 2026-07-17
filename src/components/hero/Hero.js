@@ -1,116 +1,277 @@
 "use client";
 
-import { useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import Image from "next/image";
+import { useCallback, useRef } from "react";
 
+import { gsap, useGSAP } from "@/lib/gsap";
+import styles from "./Hero.module.css";
 export default function Hero() {
-  const heroRef = useRef(null);
+  const sectionRef = useRef(null);
+  const imageRef = useRef(null);
+  const contentRef = useRef(null);
+  const scrollIndicatorRef = useRef(null);
+
+  /*
+   * Scroll smoothly to the About section.
+   */
+  const handleScrollDown = useCallback((event) => {
+    event.preventDefault();
+
+    const aboutSection = document.getElementById("about");
+
+    if (!aboutSection) {
+      return;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const headerHeight = 88;
+
+    const destination =
+      aboutSection.getBoundingClientRect().top + window.scrollY - headerHeight;
+
+    window.scrollTo({
+      top: Math.max(0, destination),
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, []);
 
   useGSAP(
     () => {
-      const timeline = gsap.timeline({
-        defaults: {
-          ease: "power3.out",
+      const section = sectionRef.current;
+      const image = imageRef.current;
+      const content = contentRef.current;
+      const scrollIndicator = scrollIndicatorRef.current;
+
+      if (!section || !image || !content) {
+        return undefined;
+      }
+
+      const eyebrow = content.querySelector(`.${styles.eyebrow}`);
+
+      const title = content.querySelector(`.${styles.title}`);
+
+      const description = content.querySelector(`.${styles.description}`);
+
+      const action = content.querySelector(`.${styles.action}`);
+
+      if (!eyebrow || !title || !description || !action) {
+        return undefined;
+      }
+
+      const media = gsap.matchMedia();
+
+      media.add(
+        {
+          desktop: "(min-width: 768px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
         },
-      });
+        (context) => {
+          const {
+            desktop = false,
+            mobile = false,
+            reduceMotion = false,
+          } = context.conditions ?? {};
 
-      timeline
-        .from("[data-hero-eyebrow]", {
-          autoAlpha: 0,
-          y: 20,
-          duration: 0.7,
-        })
-        .from(
-          "[data-hero-title]",
-          {
-            autoAlpha: 0,
-            y: 50,
-            duration: 1,
-          },
-          "-=0.35",
-        )
-        .from(
-          "[data-hero-description]",
-          {
-            autoAlpha: 0,
-            y: 25,
-            duration: 0.75,
-          },
-          "-=0.5",
-        )
-        .from(
-          "[data-hero-actions]",
-          {
-            autoAlpha: 0,
-            y: 20,
-            duration: 0.65,
-          },
-          "-=0.4",
-        );
+          const animatedContent = [
+            eyebrow,
+            title,
+            description,
+            action,
+            scrollIndicator,
+          ].filter(Boolean);
 
-      return () => timeline.kill();
+          if (reduceMotion) {
+            gsap.set(image, {
+              scale: 1,
+              yPercent: 0,
+            });
+
+            gsap.set(animatedContent, {
+              autoAlpha: 1,
+              y: 0,
+            });
+
+            return undefined;
+          }
+
+          /*
+           * Initial entrance.
+           */
+          const entranceTimeline = gsap.timeline({
+            defaults: {
+              ease: "power3.out",
+            },
+          });
+
+          entranceTimeline
+            .fromTo(
+              image,
+              {
+                scale: mobile ? 1.035 : 1.055,
+              },
+              {
+                scale: 1,
+                duration: mobile ? 1.45 : 1.8,
+                ease: "power2.out",
+              },
+              0,
+            )
+            .fromTo(
+              eyebrow,
+              {
+                autoAlpha: 0,
+                y: mobile ? 18 : 24,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.75,
+              },
+              0.35,
+            )
+            .fromTo(
+              title,
+              {
+                autoAlpha: 0,
+                y: mobile ? 28 : 42,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: mobile ? 0.95 : 1.1,
+              },
+              0.48,
+            )
+            .fromTo(
+              description,
+              {
+                autoAlpha: 0,
+                y: mobile ? 18 : 24,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.8,
+              },
+              0.66,
+            )
+            .fromTo(
+              action,
+              {
+                autoAlpha: 0,
+                y: 16,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.75,
+              },
+              0.78,
+            );
+
+          if (scrollIndicator) {
+            entranceTimeline.fromTo(
+              scrollIndicator,
+              {
+                autoAlpha: 0,
+                y: 14,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.7,
+              },
+              0.92,
+            );
+          }
+
+          /*
+           * Subtle background parallax.
+           */
+          gsap.to(image, {
+            yPercent: desktop ? 3 : 1.5,
+            ease: "none",
+
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "bottom top",
+              scrub: mobile ? 0.45 : 0.7,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          return () => {
+            entranceTimeline.kill();
+          };
+        },
+      );
+
+      return () => {
+        media.revert();
+      };
     },
     {
-      scope: heroRef,
+      scope: sectionRef,
     },
   );
 
   return (
     <section
-      ref={heroRef}
+      ref={sectionRef}
       id="home"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#1E1E1E] px-5 pt-[86px] text-center text-white"
+      className={styles.hero}
+      aria-labelledby="hero-title"
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,161,93,0.14),transparent_58%)]"
-      />
+      <div ref={imageRef} className={styles.imageWrapper}>
+        <Image
+          src="/images/hero/leos-hero.jpg"
+          alt="Premium renovation and construction project by LEOS Project Management"
+          fill
+          priority
+          quality={92}
+          sizes="100vw"
+          className={styles.image}
+        />
+      </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl">
-        <p
-          data-hero-eyebrow
-          className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C9A15D] sm:text-xs"
-        >
-          LEOS Project Management
-        </p>
+      <div className={styles.overlay} aria-hidden="true" />
 
-        <h1
-          data-hero-title
-          className="mx-auto mt-6 max-w-5xl font-serif text-[clamp(3.4rem,8vw,8rem)] leading-[0.9]"
-        >
-          Building Better Spaces.
-          <span className="mt-2 block text-[#C9A15D]">
-            Delivering Every Detail.
-          </span>
+      <div className={styles.goldGlow} aria-hidden="true" />
+
+      <div ref={contentRef} className={styles.content}>
+        <p className={styles.eyebrow}>LEOS Project Management</p>
+
+        <h1 id="hero-title" className={styles.title}>
+          Thoughtful Spaces.
+          <span>Built With Precision.</span>
         </h1>
 
-        <p
-          data-hero-description
-          className="mx-auto mt-8 max-w-2xl text-sm leading-7 text-white/60 sm:text-base"
-        >
-          Renovation, fit-out, construction and professional project management
-          services across the UAE.
+        <p className={styles.description}>
+          Renovation, fit-out and project management solutions delivered with
+          quality, clarity and attention to every detail.
         </p>
 
-        <div
-          data-hero-actions
-          className="mt-10 flex flex-col justify-center gap-4 sm:flex-row"
-        >
-          <a
-            href="#contact"
-            className="inline-flex min-h-13 items-center justify-center bg-[#C9A15D] px-8 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1E1E1E] transition-colors duration-300 hover:bg-white"
-          >
-            Book Free Site Visit
-          </a>
-
-          <a
-            href="#services"
-            className="inline-flex min-h-13 items-center justify-center border border-white/30 px-8 text-[10px] font-semibold uppercase tracking-[0.16em] text-white transition-colors duration-300 hover:border-[#C9A15D] hover:text-[#C9A15D]"
-          >
-            View Our Services
-          </a>
-        </div>
+        <a href="#contact" className={styles.action}>
+          <span>Book a Free Site Visit</span>
+        </a>
       </div>
+
+      <a
+        ref={scrollIndicatorRef}
+        href="#about"
+        className={styles.scrollIndicator}
+        aria-label="Scroll down to learn more about LEOS"
+        onClick={handleScrollDown}
+      >
+        <span className={styles.scrollText}>Scroll Down</span>
+
+        <span className={styles.scrollLine} aria-hidden="true" />
+      </a>
     </section>
   );
 }
