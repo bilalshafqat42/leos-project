@@ -4,33 +4,93 @@ import Image from "next/image";
 import { useCallback, useRef } from "react";
 
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useBookingModal } from "@/components/booking-modal/booking-modal-context";
 import styles from "./Hero.module.css";
+
+/*
+ * Opening collage: a scattered fan of project photos that flies in
+ * and assembles on load, then clears to reveal the hero image.
+ * Reusing the two placeholder photos at different crops/angles until
+ * real project photography is available.
+ */
+const collageTiles = [
+  {
+    src: "/images/hero.avif",
+    position: "40% 30%",
+    top: "6%",
+    left: "4%",
+    width: "27%",
+    aspect: "3 / 4",
+    rotate: -7,
+    fromX: -150,
+    fromY: -90,
+  },
+  {
+    src: "/images/about.avif",
+    position: "55% 35%",
+    top: "2%",
+    left: "36%",
+    width: "30%",
+    aspect: "4 / 5",
+    rotate: 3,
+    fromX: 0,
+    fromY: -170,
+  },
+  {
+    src: "/images/hero.avif",
+    position: "65% 55%",
+    top: "8%",
+    left: "70%",
+    width: "26%",
+    aspect: "3 / 4",
+    rotate: 8,
+    fromX: 150,
+    fromY: -100,
+  },
+  {
+    src: "/images/about.avif",
+    position: "30% 60%",
+    top: "46%",
+    left: "12%",
+    width: "29%",
+    aspect: "5 / 4",
+    rotate: -4,
+    fromX: -160,
+    fromY: 120,
+  },
+  {
+    src: "/images/hero.avif",
+    position: "50% 20%",
+    top: "50%",
+    left: "58%",
+    width: "32%",
+    aspect: "4 / 5",
+    rotate: 5,
+    fromX: 170,
+    fromY: 140,
+  },
+];
+
 export default function Hero() {
   const sectionRef = useRef(null);
   const imageRef = useRef(null);
   const contentRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
+  const collageStageRef = useRef(null);
+  const { open: openBookingModal } = useBookingModal();
 
   /*
-   * Scroll smoothly to the About section.
+   * Scroll smoothly to whatever section follows the hero.
    */
   const handleScrollDown = useCallback((event) => {
     event.preventDefault();
-
-    const scene = document.getElementById("hero-about-scene");
-
-    if (!scene) {
-      return;
-    }
 
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const destination = scene.offsetTop + scene.offsetHeight - window.innerHeight;
-
     window.scrollTo({
-      top: Math.max(0, destination),
+      top: window.innerHeight,
       behavior: reduceMotion ? "auto" : "smooth",
     });
   }, []);
@@ -81,6 +141,13 @@ export default function Hero() {
             scrollIndicator,
           ].filter(Boolean);
 
+          const collageStage = collageStageRef.current;
+          const collageTileEls = collageStage
+            ? gsap.utils.toArray(
+                collageStage.querySelectorAll("[data-collage-tile]"),
+              )
+            : [];
+
           if (reduceMotion) {
             gsap.set(image, {
               scale: 1,
@@ -92,7 +159,48 @@ export default function Hero() {
               y: 0,
             });
 
+            if (collageStage) {
+              gsap.set(collageStage, { autoAlpha: 0 });
+            }
+
             return undefined;
+          }
+
+          /*
+           * Opening collage assembly (desktop/tablet only).
+           */
+          const collageTimeline = gsap.timeline();
+
+          if (desktop && collageStage && collageTileEls.length) {
+            gsap.set(collageStage, { autoAlpha: 1 });
+
+            gsap.set(collageTileEls, {
+              autoAlpha: 0,
+              x: (index, el) => Number(el.dataset.fromX) || 0,
+              y: (index, el) => Number(el.dataset.fromY) || 0,
+            });
+
+            collageTimeline
+              .to(collageTileEls, {
+                autoAlpha: 1,
+                x: 0,
+                y: 0,
+                duration: 1.05,
+                stagger: 0.09,
+                ease: "power3.out",
+              })
+              .to(
+                collageStage,
+                {
+                  autoAlpha: 0,
+                  scale: 1.05,
+                  duration: 0.85,
+                  ease: "power2.inOut",
+                },
+                "+=0.4",
+              );
+          } else if (collageStage) {
+            gsap.set(collageStage, { autoAlpha: 0 });
           }
 
           /*
@@ -186,6 +294,12 @@ export default function Hero() {
             );
           }
 
+          const master = gsap.timeline();
+
+          master
+            .add(collageTimeline)
+            .add(entranceTimeline, desktop && collageTileEls.length ? "-=0.55" : 0);
+
           /*
            * Subtle background parallax.
            */
@@ -203,7 +317,7 @@ export default function Hero() {
           });
 
           return () => {
-            entranceTimeline.kill();
+            master.kill();
           };
         },
       );
@@ -240,6 +354,39 @@ export default function Hero() {
 
       <div className={styles.goldGlow} aria-hidden="true" />
 
+      <div ref={collageStageRef} className={styles.collageStage} aria-hidden="true">
+        <div className={styles.collageBackdrop} />
+
+        <div className={styles.collageFrame}>
+          {collageTiles.map((tile, index) => (
+            <div
+              key={index}
+              data-collage-tile
+              data-from-x={tile.fromX}
+              data-from-y={tile.fromY}
+              className={styles.collageTile}
+              style={{
+                top: tile.top,
+                left: tile.left,
+                width: tile.width,
+                aspectRatio: tile.aspect,
+                transform: `rotate(${tile.rotate}deg)`,
+              }}
+            >
+              <Image
+                src={tile.src}
+                alt=""
+                fill
+                quality={80}
+                sizes="30vw"
+                className={styles.collageTileImage}
+                style={{ objectPosition: tile.position }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div ref={contentRef} className={styles.content}>
         <p className={styles.eyebrow}>LEOS Project Management</p>
 
@@ -253,14 +400,18 @@ export default function Hero() {
           UAE—delivered through one trusted team.
         </p>
 
-        <a href="#contact" className={styles.action}>
+        <button
+          type="button"
+          onClick={openBookingModal}
+          className={styles.action}
+        >
           <span>Book a Free Site Visit</span>
-        </a>
+        </button>
       </div>
 
       <a
         ref={scrollIndicatorRef}
-        href="#about"
+        href="#"
         className={styles.scrollIndicator}
         aria-label="Scroll down to learn more about LEOS"
         onClick={handleScrollDown}

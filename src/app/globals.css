@@ -1,10 +1,19 @@
 @import "tailwindcss";
 
+/*
+ * Brand palette override: Tailwind's built-in "white" utility
+ * (bg-white, text-white/75, border-white/15, etc.) now resolves
+ * to the LEOS off-white instead of pure #fff.
+ */
+@theme {
+  --color-white: #f8f6f2;
+}
+
 :root {
   --leos-gold: #c9a15d;
-  --leos-black: #1e1e1e;
-  --leos-white: #ffffff;
-  --leos-cream: #f6f1e8;
+  --leos-black: #1f1f1f;
+  --leos-white: #f8f6f2;
+  --leos-cream: #f8f6f2;
   --type-display: clamp(52px, 4.6vw, 72px);
   --type-section: clamp(42px, 3.6vw, 58px);
   --type-feature: clamp(42px, 3.1vw, 48px);

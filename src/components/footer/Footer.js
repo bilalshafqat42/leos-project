@@ -1,27 +1,77 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 
-const services = [
-  "Villa Renovation",
-  "Apartment Renovation",
-  "Office Fit-Out",
-  "Interior Design",
-  "Construction",
-  "Project Management",
-];
+import { services } from "@/data/services";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { useBookingModal } from "@/components/booking-modal/booking-modal-context";
 
 const quickLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Projects", href: "/services#projects" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Footer() {
+  const signoffRef = useRef(null);
+  const { open: openBookingModal } = useBookingModal();
+
+  useGSAP(
+    () => {
+      const signoff = signoffRef.current;
+
+      if (!signoff) return undefined;
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (reduceMotion) {
+        gsap.set(signoff, { autoAlpha: 1, y: 0 });
+        return undefined;
+      }
+
+      const reveal = gsap.fromTo(
+        signoff,
+        { autoAlpha: 0, y: 36 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: signoff,
+            start: "top 85%",
+          },
+        },
+      );
+
+      return () => reveal.kill();
+    },
+    { scope: signoffRef },
+  );
+
   return (
-    <footer className="border-t border-[#C9A15D]/25 bg-[#1E1E1E] text-white">
+    <footer className="border-t border-[#C9A15D]/25 bg-[#1F1F1F] text-white">
+      <div
+        ref={signoffRef}
+        className="border-b border-[#C9A15D]/20 px-5 py-16 text-center sm:px-8 sm:py-20 lg:px-12 lg:py-24 lg:text-left"
+      >
+        <div className="mx-auto max-w-[1440px]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C9A15D]">
+            Renovation · Fit-Out · Construction · Project Management
+          </p>
+
+          <h2 className="mt-6 font-serif text-[clamp(3.2rem,10vw,8rem)] leading-[0.94] tracking-[-0.02em] text-white">
+            LEOS
+          </h2>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_0.9fr_1.2fr] lg:gap-10">
           <div>
@@ -72,12 +122,12 @@ export default function Footer() {
 
           <FooterColumn title="Services">
             {services.map((service) => (
-              <li key={service}>
+              <li key={service.number}>
                 <Link
-                  href="#services"
+                  href="/services"
                   className="transition-colors hover:text-[#C9A15D]"
                 >
-                  {service}
+                  {service.title}
                 </Link>
               </li>
             ))}
@@ -114,12 +164,13 @@ export default function Footer() {
               </ContactItem>
             </div>
 
-            <Link
-              href="#contact-form"
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#C9A15D] px-6 text-xs font-semibold uppercase tracking-[0.14em] transition-all duration-300 hover:bg-[#C9A15D] hover:text-[#1E1E1E]"
+            <button
+              type="button"
+              onClick={openBookingModal}
+              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#C9A15D] px-6 text-xs font-semibold uppercase tracking-[0.14em] transition-all duration-300 hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
             >
               Request Consultation
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -173,7 +224,7 @@ function SocialLink({ href, label, children }) {
     <Link
       href={href}
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[10px] font-semibold tracking-[0.08em] transition-all hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1E1E1E]"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[10px] font-semibold tracking-[0.08em] transition-all hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
     >
       {children}
     </Link>

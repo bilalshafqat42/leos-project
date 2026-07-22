@@ -8,6 +8,8 @@ import styles from "@/styles/sections.module.css";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const sectionRef = useRef(null);
 
   useGSAP(
@@ -46,9 +48,46 @@ export default function Contact() {
     { scope: sectionRef },
   );
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setSubmitted(true);
+
+    if (submitting) return;
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get("name"),
+      contact: formData.get("contact"),
+      projectType: formData.get("projectType"),
+      message: formData.get("message"),
+    };
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Something went wrong.");
+      }
+
+      setSubmitted(true);
+      form.reset();
+    } catch (submitError) {
+      setError(
+        submitError.message ||
+          "We couldn't send your enquiry. Please call or email us directly.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -112,14 +151,20 @@ export default function Contact() {
               <textarea name="message" rows={4} required />
             </label>
 
-            <button type="submit">
-              <span>Request Consultation</span>
+            <button type="submit" disabled={submitting}>
+              <span>{submitting ? "Sending…" : "Request Consultation"}</span>
               <span aria-hidden="true">↗</span>
             </button>
 
             <p className={styles.formNote}>
               By submitting, you agree to be contacted about your enquiry.
             </p>
+
+            {error && (
+              <p className={styles.formError} role="alert">
+                {error}
+              </p>
+            )}
 
             {submitted && (
               <p className={styles.success} role="status" aria-live="polite">

@@ -2,6 +2,8 @@ import { Inter, Libre_Baskerville } from "next/font/google";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import Loader from "@/components/loader/Loader";
+import { BookingModalProvider } from "@/components/booking-modal/booking-modal-context";
+import BookingModal from "@/components/booking-modal/BookingModal";
 import "./globals.css";
 
 const headingFont = Libre_Baskerville({
@@ -45,14 +47,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${headingFont.variable} ${bodyFont.variable} min-h-screen bg-white text-[#1E1E1E] antialiased`}
+        className={`${headingFont.variable} ${bodyFont.variable} min-h-screen bg-white text-[#1F1F1F] antialiased`}
       >
-        <Loader />
-        <Header />
+        <BookingModalProvider>
+          <Loader />
+          <Header />
 
-        <main>{children}</main>
+          <main>{children}</main>
 
-        <Footer />
+          <Footer />
+
+          <BookingModal />
+        </BookingModalProvider>
       </body>
     </html>
   );

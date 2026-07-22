@@ -8,8 +8,8 @@
 
   overflow: hidden;
 
-  background: #1e1e1e;
-  color: #ffffff;
+  background: #1f1f1f;
+  color: #f8f6f2;
 }
 
 /* =========================================================
@@ -94,6 +94,72 @@
 }
 
 /* =========================================================
+   Opening collage
+   ========================================================= */
+
+.collageStage {
+  position: absolute;
+  inset: 0;
+
+  z-index: 20;
+
+  display: grid;
+  place-items: center;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  will-change: transform, opacity;
+}
+
+.collageBackdrop {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at 22% 18%, rgba(201, 161, 93, 0.16), transparent 42%),
+    var(--leos-black);
+}
+
+.collageFrame {
+  position: relative;
+
+  width: min(1040px, 88vw);
+  height: min(600px, 74vh);
+}
+
+.collageTile {
+  position: absolute;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(248, 246, 242, 0.14);
+  border-radius: 14px;
+
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+
+  will-change: transform, opacity;
+}
+
+.collageTileImage {
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .collageStage {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collageStage {
+    display: none;
+  }
+}
+
+/* =========================================================
    Content
    ========================================================= */
 
@@ -133,7 +199,7 @@
   line-height: 0.98;
   letter-spacing: -0.04em;
 
-  color: #ffffff;
+  color: #f8f6f2;
 
   text-wrap: balance;
 }
@@ -167,7 +233,10 @@
   align-items: center;
 
   margin-top: 34px;
-  padding-bottom: 9px;
+  padding: 0 0 9px;
+  border: 0;
+
+  background: transparent;
 
   font-family: var(--font-body);
   font-size: 13px;
@@ -176,8 +245,9 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 
-  color: #ffffff;
+  color: #f8f6f2;
   text-decoration: none;
+  text-align: left;
 }
 
 .action::before,
@@ -236,7 +306,7 @@
   align-items: center;
   gap: 10px;
 
-  color: #ffffff;
+  color: #f8f6f2;
   text-decoration: none;
 
   transform: translateX(-50%);

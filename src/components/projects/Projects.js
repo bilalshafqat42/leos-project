@@ -1,61 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { gsap, useGSAP } from "@/lib/gsap";
+import { projects } from "@/data/projects";
 import styles from "./Projects.module.css";
 
-const projects = [
-  {
-    number: "01",
-    category: "Villa Renovation",
-    title: "A Home Reimagined Around Light.",
-    description:
-      "A complete residential transformation balancing contemporary detail, generous living spaces and a calm material palette.",
-    location: "Dubai, UAE",
-    scope: "Turnkey Renovation",
-    before: "/images/hero.avif",
-    after: "/images/about.avif",
-    beforePosition: "42% center",
-    afterPosition: "center",
-    reveal: 58,
-  },
-  {
-    number: "02",
-    category: "Kitchen Renovation",
-    title: "Better Flow. Beautifully Resolved.",
-    description:
-      "A brighter, more functional interior shaped through considered planning, custom joinery and carefully coordinated finishes.",
-    location: "Ajman, UAE",
-    scope: "Kitchen & Joinery",
-    before: "/images/about.avif",
-    after: "/images/hero.avif",
-    beforePosition: "68% center",
-    afterPosition: "58% center",
-    reveal: 52,
-  },
-  {
-    number: "03",
-    category: "Office Fit-Out",
-    title: "A Workplace Built For Momentum.",
-    description:
-      "An end-to-end fit-out bringing structure, services and refined interior details together in one accountable delivery.",
-    location: "United Arab Emirates",
-    scope: "Commercial Fit-Out",
-    before: "/images/hero.avif",
-    after: "/images/about.avif",
-    beforePosition: "72% center",
-    afterPosition: "54% center",
-    reveal: 63,
-  },
-];
-
+/*
+ * Clean, editorial project gallery: one full-bleed "after" photo per
+ * project with a small inset "before" chip, caption on the image,
+ * and a slow parallax zoom. Replaces the earlier drag-to-reveal
+ * comparison card design.
+ */
 export default function Projects() {
   const sectionRef = useRef(null);
-  const [revealPositions, setRevealPositions] = useState(() =>
-    projects.map((project) => project.reveal),
-  );
 
   useGSAP(
     () => {
@@ -65,129 +24,98 @@ export default function Projects() {
       const introItems = gsap.utils.toArray(
         section.querySelectorAll("[data-project-intro]"),
       );
-      const cards = gsap.utils.toArray(
-        section.querySelectorAll("[data-project-card]"),
+      const stories = gsap.utils.toArray(
+        section.querySelectorAll("[data-project-story]"),
       );
-      const media = gsap.matchMedia();
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
-      media.add(
+      if (reduceMotion) {
+        gsap.set([...introItems, ...stories], {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+        });
+        return undefined;
+      }
+
+      const introTween = gsap.fromTo(
+        introItems,
+        { autoAlpha: 0, y: 34 },
         {
-          desktop: "(min-width: 768px)",
-          mobile: "(max-width: 767px)",
-          reduceMotion: "(prefers-reduced-motion: reduce)",
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: section, start: "top 78%" },
         },
-        (context) => {
-          const { desktop, mobile, reduceMotion } = context.conditions ?? {};
+      );
 
-          if (reduceMotion) {
-            gsap.set([...introItems, ...cards], {
-              clearProps: "all",
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              filter: "none",
-              clipPath: "none",
-            });
-            return undefined;
-          }
+      const storyTweens = stories.map((story) => {
+        const media = story.querySelector("[data-project-media]");
+        const chip = story.querySelector("[data-project-chip]");
+        const details = story.querySelector("[data-project-details]");
 
-          const introTween = gsap.fromTo(
-            introItems,
-            { autoAlpha: 0, y: 38 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.95,
-              stagger: 0.1,
-              ease: "power3.out",
-              scrollTrigger: {
-                trigger: section,
-                start: "top 78%",
-              },
-            },
-          );
+        const entrance = gsap.fromTo(
+          [media, details],
+          { autoAlpha: 0, y: 50 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.95,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: { trigger: story, start: "top 82%" },
+          },
+        );
 
-          const cardTweens = cards.flatMap((card, index) => {
-            const images = card.querySelectorAll("[data-project-image]");
-            const entrance = gsap.fromTo(
-              card,
-              {
-                autoAlpha: 0,
-                y: mobile ? 58 : 110,
-                clipPath: "inset(7% 3% 7% 3% round 24px)",
-              },
+        const chipTween = chip
+          ? gsap.fromTo(
+              chip,
+              { autoAlpha: 0, y: 24 },
               {
                 autoAlpha: 1,
                 y: 0,
-                clipPath: "inset(0% 0% 0% 0% round 24px)",
-                duration: 1,
+                duration: 0.8,
                 ease: "power3.out",
-                scrollTrigger: {
-                  trigger: card,
-                  start: "top 91%",
-                  end: "top 58%",
-                  scrub: 0.7,
-                },
+                scrollTrigger: { trigger: story, start: "top 74%" },
               },
-            );
+            )
+          : null;
 
-            const imageMotion = gsap.fromTo(
-              images,
-              { scale: 1.075, yPercent: -2 },
+        const parallax = media
+          ? gsap.fromTo(
+              media.querySelector("img"),
+              { scale: 1.15 },
               {
                 scale: 1,
-                yPercent: 2,
                 ease: "none",
                 scrollTrigger: {
-                  trigger: card,
+                  trigger: story,
                   start: "top bottom",
                   end: "bottom top",
-                  scrub: 0.9,
-                },
-              },
-            );
-
-            const tweens = [entrance, imageMotion];
-
-            if (desktop && index < cards.length - 1) {
-              const nextCard = cards[index + 1];
-              const stackTween = gsap.to(card, {
-                scale: 0.972,
-                filter: "brightness(0.72)",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: nextCard,
-                  start: "top 88%",
-                  end: "top 20%",
                   scrub: 0.8,
                 },
-              });
+              },
+            )
+          : null;
 
-              tweens.push(stackTween);
-            }
+        return { entrance, chipTween, parallax };
+      });
 
-            return tweens;
-          });
-
-          return () => {
-            introTween.kill();
-            cardTweens.forEach((tween) => tween.kill());
-          };
-        },
-      );
-
-      return () => media.revert();
+      return () => {
+        introTween.kill();
+        storyTweens.forEach(({ entrance, chipTween, parallax }) => {
+          entrance.kill();
+          chipTween?.kill();
+          parallax?.kill();
+        });
+      };
     },
     { scope: sectionRef },
   );
-
-  function updateReveal(index, value) {
-    setRevealPositions((current) =>
-      current.map((position, itemIndex) =>
-        itemIndex === index ? Number(value) : position,
-      ),
-    );
-  }
 
   return (
     <section id="projects" ref={sectionRef} className={styles.projects}>
@@ -202,35 +130,59 @@ export default function Projects() {
 
           <div className={styles.introCopy} data-project-intro>
             <p>
-              Move the gold line to explore each transformation. Every project
-              is managed from the first site review to the finishing detail.
+              A look at recent renovations, delivered from the first site
+              review to the finishing detail.
             </p>
-            <span>Drag to reveal</span>
           </div>
         </div>
 
         <div className={styles.stories}>
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <article
               key={project.number}
               className={styles.story}
-              data-project-card
-              data-reverse={index % 2 === 1 ? "true" : "false"}
-              style={{
-                "--stack-offset": `${index * 18}px`,
-                zIndex: index + 1,
-              }}
+              data-project-story
             >
-              <div className={styles.storyInfo}>
-                <div className={styles.storyTopline}>
-                  <span>{project.number}</span>
-                  <span>{project.category}</span>
+              <div className={styles.media} data-project-media>
+                <Image
+                  src={project.after}
+                  alt={`${project.title} after renovation`}
+                  fill
+                  quality={88}
+                  sizes="(max-width: 767px) 100vw, 90vw"
+                  className={styles.image}
+                  style={{ objectPosition: project.afterPosition }}
+                />
+
+                <div className={styles.scrim} aria-hidden="true" />
+
+                <div className={styles.caption}>
+                  <div>
+                    <p className={styles.captionTopline}>
+                      <span>{project.number}</span>
+                      <span>{project.category}</span>
+                    </p>
+                    <h3>{project.title}</h3>
+                  </div>
                 </div>
 
-                <h3>{project.title}</h3>
-                <p className={styles.storyDescription}>{project.description}</p>
+                <div className={styles.beforeChip} data-project-chip>
+                  <Image
+                    src={project.before}
+                    alt={`${project.title} before renovation`}
+                    fill
+                    quality={70}
+                    sizes="150px"
+                    className={styles.image}
+                    style={{ objectPosition: project.beforePosition }}
+                  />
+                </div>
+              </div>
 
-                <dl className={styles.projectFacts}>
+              <div className={styles.details} data-project-details>
+                <p className={styles.description}>{project.description}</p>
+
+                <dl className={styles.facts}>
                   <div>
                     <dt>Location</dt>
                     <dd>{project.location}</dd>
@@ -240,61 +192,6 @@ export default function Projects() {
                     <dd>{project.scope}</dd>
                   </div>
                 </dl>
-
-                <p className={styles.dragNote}>
-                  <span aria-hidden="true">↔</span>
-                  Drag across the image
-                </p>
-              </div>
-
-              <div
-                className={styles.comparison}
-                style={{ "--reveal": `${revealPositions[index]}%` }}
-              >
-                <Image
-                  src={project.after}
-                  alt={`${project.title} after renovation`}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 767px) 100vw, 64vw"
-                  className={styles.projectImage}
-                  style={{ objectPosition: project.afterPosition }}
-                  data-project-image
-                />
-
-                <div className={styles.beforeLayer}>
-                  <Image
-                    src={project.before}
-                    alt={`${project.title} before renovation`}
-                    fill
-                    quality={88}
-                    sizes="(max-width: 767px) 100vw, 64vw"
-                    className={styles.projectImage}
-                    style={{ objectPosition: project.beforePosition }}
-                    data-project-image
-                  />
-                </div>
-
-                <span className={`${styles.imageLabel} ${styles.beforeLabel}`}>
-                  Before
-                </span>
-                <span className={`${styles.imageLabel} ${styles.afterLabel}`}>
-                  After
-                </span>
-
-                <div className={styles.revealLine} aria-hidden="true">
-                  <span>↔</span>
-                </div>
-
-                <input
-                  className={styles.revealControl}
-                  type="range"
-                  min="8"
-                  max="92"
-                  value={revealPositions[index]}
-                  onChange={(event) => updateReveal(index, event.target.value)}
-                  aria-label={`Reveal the before and after view for ${project.title}`}
-                />
               </div>
             </article>
           ))}

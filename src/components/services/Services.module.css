@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   height: calc(var(--service-count) * 100svh);
-  background: #1e1e1e;
+  background: #1f1f1f;
   color: var(--leos-white);
 }
 
@@ -14,7 +14,7 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  background: #1e1e1e;
+  background: #1f1f1f;
 }
 
 .serviceSlide {
@@ -61,7 +61,7 @@
   font-weight: 600;
   letter-spacing: 0.23em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 42%);
+  color: rgb(248 246 242 / 42%);
 }
 
 .eyebrow span {
@@ -85,7 +85,7 @@
   margin: 28px 0 0;
   font-size: 14px;
   line-height: 1.8;
-  color: rgb(255 255 255 / 62%);
+  color: rgb(248 246 242 / 62%);
 }
 
 .scope {
@@ -122,7 +122,7 @@
   inset: 0;
   z-index: 2;
   background:
-    linear-gradient(270deg, rgb(30 30 30 / 38%) 0%, transparent 24%),
+    linear-gradient(270deg, rgb(31 31 31 / 38%) 0%, transparent 24%),
     linear-gradient(0deg, rgb(0 0 0 / 16%) 0%, transparent 38%);
   pointer-events: none;
 }
@@ -147,7 +147,7 @@
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.16em;
-  color: rgb(255 255 255 / 42%);
+  color: rgb(248 246 242 / 42%);
 }
 
 .progress i {
@@ -156,7 +156,7 @@
   width: 1px;
   height: clamp(150px, 25vh, 250px);
   overflow: hidden;
-  background: rgb(255 255 255 / 16%);
+  background: rgb(248 246 242 / 16%);
 }
 
 .progress b {

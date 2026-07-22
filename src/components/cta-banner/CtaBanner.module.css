@@ -1,0 +1,121 @@
+.cta {
+  position: relative;
+
+  padding: clamp(80px, 10vw, 130px) 0;
+
+  background: var(--leos-black);
+  color: var(--leos-white);
+  text-align: center;
+}
+
+.container {
+  width: min(100% - 44px, 900px);
+  margin-inline: auto;
+
+  will-change: transform, opacity;
+}
+
+.eyebrow {
+  margin: 0 0 20px;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+
+  color: var(--leos-gold);
+}
+
+.heading {
+  margin: 0;
+
+  font-family: var(--font-heading);
+  font-size: var(--type-feature);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+
+  color: var(--leos-white);
+
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 520px;
+  margin: 20px auto 0;
+
+  font-size: 14px;
+  line-height: 1.8;
+
+  color: rgb(248 246 242 / 62%);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  margin-top: 34px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid var(--leos-gold);
+
+  background: var(--leos-gold);
+  color: var(--leos-black);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  transition: background 300ms ease, color 300ms ease;
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background: transparent;
+  color: var(--leos-gold);
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid rgb(248 246 242 / 25%);
+
+  background: transparent;
+  color: var(--leos-white);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  transition: border-color 300ms ease, color 300ms ease;
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  border-color: var(--leos-gold);
+  color: var(--leos-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+}
