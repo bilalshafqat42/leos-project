@@ -8,17 +8,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useBookingModal } from "@/components/booking-modal/booking-modal-context";
 
-const navLeft = [
+const mobileNav = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-];
-
-const navRight = [
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
-
-const mobileNav = [...navLeft, ...navRight];
 
 export default function Header() {
   const pathname = usePathname();
@@ -313,17 +308,11 @@ export default function Header() {
     ? "fixed inset-x-0 top-0 z-[100] border-b border-[#C9A15D]/25 bg-[#1F1F1F]/92 text-white shadow-[0_12px_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl transition-all duration-500"
     : "fixed inset-x-0 top-0 z-[100] border-b border-white/15 bg-[#1F1F1F]/45 text-white backdrop-blur-md transition-all duration-500";
 
-  const navLinkClass = (href) =>
-    `text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors duration-300 hover:text-[#C9A15D] ${
-      isActive(href) ? "text-[#C9A15D]" : "text-white/85"
-    }`;
-
   return (
     <>
       <header ref={headerRef} className={headerClassName}>
-        <div className="mx-auto grid h-[88px] w-full max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1fr_auto_1fr] lg:px-12">
-          {/* Mobile hamburger (hidden on desktop) */}
-          <div data-header-item className="flex items-center justify-self-start lg:hidden">
+        <div className="mx-auto grid h-[88px] w-full max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center px-5 sm:px-8 lg:px-12">
+          <div data-header-item className="flex items-center justify-self-start">
             <button
               ref={menuButtonRef}
               type="button"
@@ -337,26 +326,12 @@ export default function Header() {
                 <span className="h-px w-7 bg-[#C9A15D] transition-transform duration-300 group-hover:translate-x-1" />
                 <span className="h-px w-5 bg-[#C9A15D] transition-all duration-300 group-hover:w-7" />
               </span>
+
+              <span className="hidden text-[length:var(--type-label)] font-medium uppercase tracking-[var(--ls-label)] sm:inline">
+                Menu
+              </span>
             </button>
           </div>
-
-          {/* Desktop nav: left */}
-          <nav
-            data-header-item
-            aria-label="Primary"
-            className="hidden items-center gap-9 justify-self-start lg:flex"
-          >
-            {navLeft.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className={navLinkClass(item.href)}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
 
           <Link
             data-header-item
@@ -374,28 +349,11 @@ export default function Header() {
             />
           </Link>
 
-          {/* Desktop nav: right + CTA */}
-          <div
-            data-header-item
-            className="flex items-center justify-self-end gap-8"
-          >
-            <nav aria-label="Secondary" className="hidden items-center gap-9 lg:flex">
-              {navRight.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  className={navLinkClass(item.href)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
+          <div data-header-item className="flex items-center justify-self-end">
             <button
               type="button"
               onClick={handleBookClick}
-              className="group inline-flex min-h-11 items-center justify-center border border-[#C9A15D] bg-transparent px-4 text-[10px] font-semibold uppercase tracking-[0.12em] !text-[#C9A15D] transition-all duration-300 ease-out hover:bg-[#C9A15D] hover:!text-[#1F1F1F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A15D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1F1F1F] sm:px-6 sm:text-[12px] xl:min-h-12 xl:px-7"
+              className="group inline-flex min-h-11 items-center justify-center border border-[#C9A15D] bg-transparent px-4 text-[length:var(--type-label-sm)] font-semibold uppercase tracking-[var(--ls-label-sm)] !text-[#C9A15D] transition-all duration-300 ease-out hover:bg-[#C9A15D] hover:!text-[#1F1F1F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A15D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1F1F1F] sm:px-6 sm:text-[length:var(--type-label)] sm:tracking-[var(--ls-label)] xl:min-h-12 xl:px-7"
             >
               <span className="transition-transform duration-300 group-hover:-translate-y-px">
                 <span className="hidden sm:inline">Book Free Site Visit</span>
@@ -456,9 +414,9 @@ export default function Header() {
                     onClick={() => closeMenu()}
                     tabIndex={menuOpen ? 0 : -1}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className="group flex items-center gap-4 font-serif text-[clamp(2rem,4.4vw,4.35rem)] leading-[1.02] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none"
+                    className="group flex items-center gap-4 font-serif text-[length:var(--type-nav)] leading-[var(--lh-display)] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none"
                   >
-                    <span className="w-0 overflow-hidden text-[11px] font-semibold tracking-[0.16em] text-[#C9A15D] opacity-0 transition-all duration-500 group-hover:w-9 group-hover:opacity-100">
+                    <span className="w-0 overflow-hidden text-[length:var(--type-label)] font-semibold tracking-[var(--ls-label)] text-[#C9A15D] opacity-0 transition-all duration-500 group-hover:w-9 group-hover:opacity-100">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <span>{item.label}</span>
@@ -470,7 +428,7 @@ export default function Header() {
                   type="button"
                   onClick={handleBookClick}
                   tabIndex={menuOpen ? 0 : -1}
-                  className="group flex items-center gap-4 border-0 bg-transparent p-0 text-left font-serif text-[clamp(1.6rem,3.4vw,3rem)] leading-[1.02] text-[#C9A15D] transition-all duration-500 hover:translate-x-2 focus-visible:text-white focus-visible:outline-none"
+                  className="group flex items-center gap-4 border-0 bg-transparent p-0 text-left font-serif text-[length:var(--type-card-lg)] leading-[var(--lh-heading)] text-[#C9A15D] transition-all duration-500 hover:translate-x-2 focus-visible:text-white focus-visible:outline-none"
                 >
                   Book a Free Site Visit
                 </button>
@@ -480,7 +438,7 @@ export default function Header() {
 
           <div
             data-menu-footer
-            className="flex shrink-0 flex-col gap-3 border-t border-white/15 pt-5 text-[11px] uppercase tracking-[0.14em] text-white/45 sm:flex-row sm:items-center sm:justify-between"
+            className="flex shrink-0 flex-col gap-3 border-t border-white/15 pt-5 text-[length:var(--type-label)] uppercase tracking-[var(--ls-label)] text-white/45 sm:flex-row sm:items-center sm:justify-between"
           >
             <span>Renovation · Fit-Out · Construction</span>
             <span>Across the UAE</span>
@@ -495,10 +453,10 @@ export default function Header() {
           className="relative hidden h-full border-0 bg-[#151515] bg-[linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.7)),url('/images/hero.avif')] bg-cover bg-center p-0 lg:block"
         >
           <span className="absolute inset-x-12 bottom-14 border-l border-[#C9A15D] pl-6 text-left">
-            <span className="block text-[12px] font-semibold uppercase tracking-[0.16em] text-[#C9A15D]">
+            <span className="block text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] text-[#C9A15D]">
               LEOS Project Management
             </span>
-            <span className="mt-4 block max-w-lg font-serif text-4xl leading-[1.15] text-white xl:text-5xl">
+            <span className="mt-4 block max-w-lg font-serif text-[length:var(--type-feature)] leading-[var(--lh-heading)] text-white">
               Building spaces with precision, quality and confidence.
             </span>
           </span>

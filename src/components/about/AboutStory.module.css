@@ -41,9 +41,9 @@
 .eyebrow {
   margin: 0 0 22px;
 
-  font-size: 10px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.27em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 
   color: var(--leos-gold);
@@ -51,13 +51,10 @@
 
 .heading {
   max-width: 560px;
-  margin: 0;
 
-  font-family: var(--font-heading);
   font-size: var(--type-feature);
-  font-weight: 400;
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-feature);
 
   text-wrap: balance;
 }
@@ -66,8 +63,8 @@
   max-width: 540px;
   margin: 26px 0 0;
 
-  font-size: 14px;
-  line-height: 1.85;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
 
   color: rgb(30 30 30 / 68%);
 }
@@ -99,15 +96,15 @@
 
 .metrics strong {
   font-family: var(--font-heading);
-  font-size: clamp(24px, 2.2vw, 36px);
+  font-size: var(--type-stat-sm);
   font-weight: 400;
   color: var(--leos-gold);
 }
 
 .metrics span {
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: rgb(30 30 30 / 52%);
 }
@@ -121,9 +118,9 @@
   margin-top: 34px;
   padding-bottom: 9px;
 
-  font-size: 11px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 
   color: var(--leos-black);

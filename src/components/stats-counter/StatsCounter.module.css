@@ -54,9 +54,7 @@
 .number {
   display: block;
 
-  font-family: var(--font-heading);
-  font-size: clamp(40px, 6vw, 84px);
-  font-weight: 400;
+  font-size: var(--type-stat);
   line-height: 1;
   letter-spacing: -0.02em;
 
@@ -67,9 +65,9 @@
   display: block;
   margin-top: 16px;
 
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
 
   color: var(--leos-gold);
@@ -87,12 +85,6 @@
 
   .stat:nth-child(odd) {
     border-left: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .number {
-    font-size: clamp(34px, 11vw, 48px);
   }
 }
 

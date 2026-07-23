@@ -80,8 +80,8 @@ export default function Loader() {
         ref={logoRef}
         src="/logos/leos-logo-gold.svg"
         alt=""
-        width={556}
-        height={631}
+        width={300}
+        height={300}
         priority
         className={styles.logo}
       />

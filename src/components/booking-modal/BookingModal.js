@@ -81,7 +81,18 @@ export default function BookingModal() {
       return () => timeline.kill();
     }
 
-    return undefined;
+    if (reduceMotion) {
+      gsap.set(overlay, { autoAlpha: 0 });
+      return undefined;
+    }
+
+    const timeline = gsap.timeline();
+
+    timeline
+      .to(panel, { y: 16, scale: 0.98, duration: 0.25, ease: "power2.in" }, 0)
+      .to(overlay, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0.05);
+
+    return () => timeline.kill();
   }, [isOpen]);
 
   function handleBackdropClick(event) {
@@ -145,7 +156,7 @@ export default function BookingModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="booking-modal-title"
-        inert={!isOpen ? "" : undefined}
+        inert={!isOpen ? true : undefined}
       >
         <button
           type="button"

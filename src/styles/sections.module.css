@@ -5,9 +5,9 @@
 
 .eyebrow {
   margin: 0 0 22px;
-  font-size: 10px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.28em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
@@ -27,12 +27,9 @@
 .sectionTitle,
 .sectionTitleLight {
   max-width: 820px;
-  margin: 0;
-  font-family: var(--font-heading);
   font-size: var(--type-section);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-section);
   text-wrap: balance;
 }
 
@@ -43,8 +40,8 @@
 .sectionLead {
   max-width: 500px;
   margin: 0;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
   color: rgb(31 31 31 / 64%);
 }
 
@@ -98,26 +95,25 @@
 
 .serviceNumber,
 .serviceScope {
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
 
 .serviceRow h3 {
   margin: 0;
-  font-family: var(--font-heading);
   font-size: var(--type-card);
-  font-weight: 400;
-  line-height: 1.1;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-card);
 }
 
 .serviceRow > p {
   max-width: 520px;
   margin: 0;
-  font-size: 13px;
-  line-height: 1.75;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-body);
   color: rgb(31 31 31 / 64%);
   transition: color 400ms ease;
 }
@@ -154,8 +150,8 @@
 .projectsHead > p {
   max-width: 430px;
   margin: 0 0 7px;
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-body);
   color: rgb(248 246 242 / 48%);
 }
 
@@ -206,9 +202,9 @@
 .imageNote {
   position: absolute;
   z-index: 2;
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
 }
 
@@ -267,19 +263,18 @@
 .projectCopy p,
 .projectCopy span {
   margin: 0;
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
 
 .projectCopy h3 {
   margin: 14px 0 16px;
-  font-family: var(--font-heading);
   font-size: var(--type-card);
-  font-weight: 400;
-  line-height: 1.16;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-card);
 }
 
 .projectCopy span {
@@ -320,24 +315,24 @@
 
 .processStep > span {
   padding-top: 7px;
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-label-sm);
   color: var(--leos-gold);
 }
 
 .processStep h3 {
   margin: 0;
-  font-family: var(--font-heading);
   font-size: var(--type-card);
-  font-weight: 400;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-card);
 }
 
 .processStep p {
   max-width: 540px;
   margin: 15px 0 0;
-  font-size: 13px;
-  line-height: 1.75;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-body);
   color: rgb(31 31 31 / 62%);
 }
 
@@ -356,20 +351,17 @@
 
 .contactIntro h2 {
   max-width: 630px;
-  margin: 0;
-  font-family: var(--font-heading);
   font-size: var(--type-section);
-  font-weight: 400;
-  line-height: 1.01;
-  letter-spacing: -0.045em;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-section);
   text-wrap: balance;
 }
 
 .contactIntro > p:not(.eyebrow) {
   max-width: 520px;
   margin: 30px 0 0;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
   color: rgb(248 246 242 / 52%);
 }
 
@@ -388,15 +380,15 @@
 }
 
 .contactDetails span {
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
 
 .contactDetails strong {
-  font-size: 13px;
+  font-size: var(--type-body-sm);
   font-weight: 400;
   color: rgb(248 246 242 / 78%);
 }
@@ -413,9 +405,9 @@
   gap: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid rgb(248 246 242 / 14%);
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
@@ -441,9 +433,9 @@
 }
 
 .form label > span {
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: rgb(248 246 242 / 48%);
 }
@@ -459,7 +451,8 @@
   background: transparent;
   color: var(--leos-white);
   font: inherit;
-  font-size: 14px;
+  /* 16px minimum: iOS Safari auto-zooms on focus for inputs below this size */
+  font-size: 16px;
   transition: border-color 250ms ease;
 }
 
@@ -494,9 +487,9 @@
   border: 1px solid var(--leos-gold);
   background: var(--leos-gold);
   color: var(--leos-black);
-  font-size: 10px;
+  font-size: var(--type-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   transition: background 300ms ease, color 300ms ease;
 }
@@ -521,8 +514,8 @@
 .success {
   grid-column: 1 / -1;
   margin: -8px 0 0;
-  font-size: 9px;
-  line-height: 1.6;
+  font-size: var(--type-label-sm);
+  line-height: var(--lh-body-sm);
   color: rgb(248 246 242 / 30%);
 }
 
@@ -574,11 +567,6 @@
     width: min(100% - 36px, 1440px);
   }
 
-  .sectionTitle,
-  .sectionTitleLight {
-    font-size: var(--type-section);
-  }
-
   .serviceRow {
     grid-template-columns: 38px 1fr 25px;
     gap: 14px;
@@ -587,7 +575,7 @@
 
   .serviceRow > p {
     grid-column: 2 / -1;
-    font-size: 12px;
+    font-size: var(--type-body-sm);
   }
 
   .serviceArrow {
@@ -615,10 +603,6 @@
   .processStep {
     grid-template-columns: 42px 1fr;
     gap: 12px;
-  }
-
-  .contactIntro h2 {
-    font-size: var(--type-section);
   }
 
   .form {

@@ -67,9 +67,9 @@
 .eyebrow {
   margin: 0 0 10px;
 
-  font-size: 10px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 
   color: var(--leos-gold);
@@ -77,12 +77,10 @@
 
 .heading {
   max-width: 480px;
-  margin: 0;
 
-  font-family: var(--font-heading);
-  font-size: clamp(26px, 3vw, 34px);
-  font-weight: 400;
-  line-height: 1.1;
+  font-size: var(--type-card-lg);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-card-lg);
 
   color: var(--leos-white);
 }
@@ -91,8 +89,8 @@
   max-width: 460px;
   margin: 14px 0 0;
 
-  font-size: 13px;
-  line-height: 1.75;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-body);
 
   color: rgb(248 246 242 / 62%);
 }

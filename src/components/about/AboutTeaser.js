@@ -9,6 +9,7 @@ import styles from "./AboutTeaser.module.css";
 
 export default function AboutTeaser() {
   const sectionRef = useRef(null);
+  const imageRef = useRef(null);
 
   useGSAP(
     () => {
@@ -17,14 +18,22 @@ export default function AboutTeaser() {
 
       const media = section.querySelector("[data-teaser-media]");
       const content = section.querySelector("[data-teaser-content]");
+      const badge = section.querySelector("[data-teaser-badge]");
+      const image = imageRef.current;
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (reduceMotion) {
-        gsap.set([media, content], { autoAlpha: 1, y: 0 });
+        gsap.set([content, badge], { autoAlpha: 1, y: 0 });
+        gsap.set(media, { clipPath: "inset(0 0% 0 0%)" });
+        gsap.set(image, { scale: 1 });
         return undefined;
       }
+
+      gsap.set(media, { clipPath: "inset(0 0% 0 100%)" });
+      gsap.set(image, { scale: 1.18 });
+      gsap.set(badge, { autoAlpha: 0, y: 22 });
 
       const timeline = gsap.timeline({
         scrollTrigger: { trigger: section, start: "top 75%" },
@@ -36,11 +45,30 @@ export default function AboutTeaser() {
           { autoAlpha: 0, y: 34 },
           { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" },
         )
-        .fromTo(
+        .to(
           media,
-          { autoAlpha: 0, y: 40 },
-          { autoAlpha: 1, y: 0, duration: 0.95, ease: "power3.out" },
-          "-=0.65",
+          {
+            clipPath: "inset(0 0% 0 0%)",
+            duration: 1.15,
+            ease: "power4.inOut",
+          },
+          "-=0.6",
+        )
+        .to(
+          image,
+          {
+            scale: 1,
+            duration: 1.4,
+            ease: "power3.out",
+            onComplete: () => gsap.set(image, { clearProps: "scale" }),
+          },
+          "<",
+        )
+        .fromTo(
+          badge,
+          { autoAlpha: 0, y: 22 },
+          { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" },
+          "-=0.55",
         );
 
       return () => timeline.kill();
@@ -74,6 +102,7 @@ export default function AboutTeaser() {
 
           <div className={styles.media} data-teaser-media>
             <Image
+              ref={imageRef}
               src="/images/about.avif"
               alt="LEOS construction and project management team at work"
               fill
@@ -81,6 +110,11 @@ export default function AboutTeaser() {
               sizes="(max-width: 900px) 100vw, 50vw"
               className={styles.image}
             />
+
+            <div className={styles.badge} data-teaser-badge>
+              <span className={styles.badgeNumber}>500+</span>
+              <span className={styles.badgeLabel}>Projects Delivered</span>
+            </div>
           </div>
         </div>
       </div>

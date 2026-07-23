@@ -57,9 +57,9 @@
   align-items: center;
   gap: 18px;
   margin: 0 0 28px;
-  font-size: 9px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.23em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: rgb(248 246 242 / 42%);
 }
@@ -70,12 +70,9 @@
 
 .copy h2 {
   max-width: 500px;
-  margin: 0;
-  font-family: var(--font-heading);
   font-size: var(--type-feature);
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-feature);
   color: var(--leos-white);
   text-wrap: balance;
 }
@@ -83,8 +80,8 @@
 .description {
   max-width: 460px;
   margin: 28px 0 0;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
   color: rgb(248 246 242 / 62%);
 }
 
@@ -93,9 +90,9 @@
   margin: 34px 0 0;
   padding-top: 16px;
   border-top: 1px solid rgb(201 161 93 / 48%);
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
@@ -144,9 +141,9 @@
 }
 
 .progress > span {
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-label-sm);
   color: rgb(248 246 242 / 42%);
 }
 
@@ -172,12 +169,8 @@
     padding: 105px 34px 125px 72px;
   }
 
-  .copy h2 {
-    font-size: var(--type-feature);
-  }
-
   .description {
-    font-size: 13px;
+    font-size: var(--type-body-sm);
   }
 
   .progress {
@@ -216,7 +209,6 @@
 
   .copy h2 {
     max-width: 480px;
-    font-size: var(--type-feature);
   }
 
   .serviceSlide:not(:first-child) .copy {
@@ -227,8 +219,8 @@
 
   .description {
     margin-top: 20px;
-    font-size: 13px;
-    line-height: 1.7;
+    font-size: var(--type-body-sm);
+    line-height: var(--lh-body-sm);
   }
 
   .scope {

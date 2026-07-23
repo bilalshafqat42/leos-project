@@ -62,11 +62,11 @@ export default function Footer() {
         className="border-b border-[#C9A15D]/20 px-5 py-16 text-center sm:px-8 sm:py-20 lg:px-12 lg:py-24 lg:text-left"
       >
         <div className="mx-auto max-w-[1440px]">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C9A15D]">
+          <p className="text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] text-[#C9A15D]">
             Renovation · Fit-Out · Construction · Project Management
           </p>
 
-          <h2 className="mt-6 font-serif text-[clamp(3.2rem,10vw,8rem)] leading-[0.94] tracking-[-0.02em] text-white">
+          <h2 className="mt-6 font-serif text-[length:var(--type-wordmark)] leading-[var(--lh-display)] tracking-[var(--ls-display)] text-white">
             LEOS
           </h2>
         </div>
@@ -83,7 +83,7 @@ export default function Footer() {
               className="h-auto w-[150px]"
             />
 
-            <p className="mt-6 max-w-sm text-sm leading-7 text-white/60">
+            <p className="mt-6 max-w-sm text-[length:var(--type-body-sm)] leading-[var(--lh-body)] text-white/60">
               Professional renovation, fit-out, construction and project
               management solutions across the UAE.
             </p>
@@ -134,9 +134,11 @@ export default function Footer() {
           </FooterColumn>
 
           <div>
-            <p className="footer-heading">Get In Touch</p>
+            <p className="text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] text-white">
+              Get In Touch
+            </p>
 
-            <div className="mt-6 space-y-5 text-sm text-white/65">
+            <div className="mt-6 space-y-5 text-[length:var(--type-body-sm)] text-white/65">
               <ContactItem title="Phone">
                 <a
                   href="tel:+971544339700"
@@ -167,7 +169,7 @@ export default function Footer() {
             <button
               type="button"
               onClick={openBookingModal}
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#C9A15D] px-6 text-xs font-semibold uppercase tracking-[0.14em] transition-all duration-300 hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
+              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#C9A15D] px-6 text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] transition-all duration-300 hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
             >
               Request Consultation
             </button>
@@ -176,7 +178,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-5 py-6 text-xs text-white/40 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-5 py-6 text-[length:var(--type-body-sm)] text-white/40 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
           <p>
             © {new Date().getFullYear()} LEOS Project Management. All rights
             reserved.
@@ -200,9 +202,13 @@ export default function Footer() {
 function FooterColumn({ title, children }) {
   return (
     <div>
-      <p className="footer-heading">{title}</p>
+      <p className="text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] text-white">
+        {title}
+      </p>
 
-      <ul className="mt-6 space-y-3 text-sm text-white/60">{children}</ul>
+      <ul className="mt-6 space-y-3 text-[length:var(--type-body-sm)] text-white/60">
+        {children}
+      </ul>
     </div>
   );
 }
@@ -210,7 +216,7 @@ function FooterColumn({ title, children }) {
 function ContactItem({ title, children }) {
   return (
     <div>
-      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C9A15D]">
+      <p className="mb-1 text-[length:var(--type-label-sm)] font-semibold uppercase tracking-[var(--ls-label-sm)] text-[#C9A15D]">
         {title}
       </p>
 
@@ -224,7 +230,7 @@ function SocialLink({ href, label, children }) {
     <Link
       href={href}
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[10px] font-semibold tracking-[0.08em] transition-all hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[length:var(--type-label-sm)] font-semibold tracking-[0.08em] transition-all hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
     >
       {children}
     </Link>

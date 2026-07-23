@@ -28,9 +28,9 @@
 
   margin: 0 0 22px;
 
-  font-size: 9px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 
   color: var(--leos-gold);
@@ -45,21 +45,18 @@
 
 .head h2 {
   max-width: 620px;
-  margin: 0;
 
-  font-family: var(--font-heading);
   font-size: var(--type-section);
-  font-weight: 400;
-  line-height: 1.03;
-  letter-spacing: -0.04em;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-section);
 
   text-wrap: balance;
 }
 
 .headCopy p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
   color: rgb(30 30 30 / 62%);
 }
 
@@ -72,9 +69,9 @@
   margin-top: 24px;
   padding-bottom: 8px;
 
-  font-size: 11px;
+  font-size: var(--type-label);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 
   color: var(--leos-black);
@@ -136,9 +133,9 @@
 }
 
 .cardCopy span {
-  font-size: 8px;
+  font-size: var(--type-label-sm);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-label-sm);
   text-transform: uppercase;
   color: var(--leos-gold);
 }
@@ -146,9 +143,7 @@
 .cardCopy h3 {
   margin: 12px 0 0;
 
-  font-family: var(--font-heading);
-  font-size: clamp(18px, 1.7vw, 22px);
-  font-weight: 400;
+  font-size: var(--type-card-sm);
   line-height: 1.2;
 }
 

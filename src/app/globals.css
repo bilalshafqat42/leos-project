@@ -14,10 +14,49 @@
   --leos-black: #1f1f1f;
   --leos-white: #f8f6f2;
   --leos-cream: #f8f6f2;
-  --type-display: clamp(52px, 4.6vw, 72px);
-  --type-section: clamp(42px, 3.6vw, 58px);
-  --type-feature: clamp(42px, 3.1vw, 48px);
-  --type-card: clamp(34px, 2.7vw, 44px);
+
+  /*
+   * Type scale. Every heading and body-text size on the site should
+   * reference one of these — no bare px/rem font-size values in
+   * component CSS. Six heading tiers (largest to smallest), three
+   * body-copy tiers, two label/eyebrow tiers.
+   */
+
+  /* Headings */
+  --type-display: clamp(52px, 4.6vw, 72px); /* hero h1 */
+  --type-section: clamp(42px, 3.6vw, 58px); /* page banners, standalone section intros */
+  --type-feature: clamp(42px, 3.1vw, 48px); /* h2 paired with body copy (image + text layouts) */
+  --type-card: clamp(34px, 2.7vw, 44px); /* major row/card titles (service rows, process steps) */
+  --type-card-lg: clamp(24px, 2.8vw, 38px); /* standalone card/modal headings */
+  --type-card-sm: clamp(19px, 1.8vw, 24px); /* compact grid card titles */
+  --type-nav: clamp(32px, 4.4vw, 69.6px); /* full-screen nav menu links */
+  --type-wordmark: clamp(51.2px, 10vw, 128px); /* footer wordmark */
+  --type-stat: clamp(40px, 6vw, 84px); /* standalone stat counters */
+  --type-stat-sm: clamp(24px, 2.2vw, 36px); /* inline metric figures beside a heading */
+
+  /* Line-height, paired to heading size: bigger type sits tighter */
+  --lh-display: 1.02;
+  --lh-heading: 1.1;
+
+  /* Letter-spacing, paired to heading size: bigger type gets more negative tracking */
+  --ls-display: -0.04em;
+  --ls-section: -0.04em;
+  --ls-feature: -0.035em;
+  --ls-card: -0.01em;
+  --ls-card-lg: -0.02em;
+
+  /* Body copy */
+  --type-body-lg: 16px; /* hero description, prominent lead paragraphs */
+  --type-body: 15px; /* standard paragraph copy */
+  --type-body-sm: 13px; /* secondary/dense copy: facts, captions, form helper text */
+  --lh-body: 1.75;
+  --lh-body-sm: 1.6;
+
+  /* Eyebrows / labels / small caps */
+  --type-label: 12px; /* section eyebrows */
+  --type-label-sm: 10px; /* index numbers, fact labels, footnotes */
+  --ls-label: 0.16em;
+  --ls-label-sm: 0.14em;
 }
 
 *,
@@ -36,6 +75,8 @@ body {
   background: var(--leos-white);
   color: var(--leos-black);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
   overflow-x: clip;
 }
 
@@ -50,7 +91,15 @@ h4,
 h5,
 h6,
 .font-serif {
+  margin: 0;
   font-family: var(--font-heading), Georgia, serif;
+  font-weight: 400;
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0;
 }
 
 a,
@@ -93,5 +142,10 @@ img {
     --type-section: clamp(40px, 10.5vw, 46px);
     --type-feature: clamp(38px, 10.5vw, 44px);
     --type-card: clamp(32px, 9vw, 38px);
+    --type-card-lg: clamp(22px, 7vw, 28px);
+    --type-card-sm: clamp(18px, 5vw, 20px);
+    --type-stat: clamp(34px, 11vw, 48px);
+    --type-body-lg: 15px;
+    --type-body: 14px;
   }
 }
