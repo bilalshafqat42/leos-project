@@ -1,5 +1,6 @@
 import Services from "@/components/services/Services";
 import Projects from "@/components/projects/Projects";
+import ConsultancyServices from "@/components/services/ConsultancyServices";
 import Breather from "@/components/breather/Breather";
 import PageBanner from "@/components/page-banner/PageBanner";
 
@@ -21,6 +22,8 @@ export default function ServicesPage() {
       <Services />
 
       <Projects />
+
+      <ConsultancyServices />
 
       <Breather
         eyebrow="Handover"

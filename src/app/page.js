@@ -1,4 +1,5 @@
 import Hero from "@/components/hero/Hero";
+import BrandStatement from "@/components/brand-statement/BrandStatement";
 import AboutTeaser from "@/components/about/AboutTeaser";
 import StatsCounter from "@/components/stats-counter/StatsCounter";
 import ServicesTeaser from "@/components/services/ServicesTeaser";
@@ -10,6 +11,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+
+      <BrandStatement />
 
       <AboutTeaser />
 
