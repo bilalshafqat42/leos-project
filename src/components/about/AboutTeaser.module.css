@@ -30,6 +30,13 @@
   will-change: clip-path;
 }
 
+.photo {
+  position: absolute;
+  inset: 0;
+
+  display: none;
+}
+
 .image {
   object-fit: cover;
   transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -38,6 +45,22 @@
 .media:hover .image,
 .media:focus-within .image {
   transform: scale(1.05);
+}
+
+.brandBox {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--leos-black);
+}
+
+.brandLogo {
+  width: clamp(96px, 22%, 160px);
+  height: auto;
 }
 
 .badge {
@@ -156,6 +179,14 @@
   .media {
     order: -1;
     aspect-ratio: 16 / 11;
+  }
+
+  .photo {
+    display: block;
+  }
+
+  .brandBox {
+    display: none;
   }
 
   .badge {

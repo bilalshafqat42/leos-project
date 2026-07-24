@@ -101,20 +101,32 @@ export default function AboutTeaser() {
           </div>
 
           <div className={styles.media} data-teaser-media>
-            <Image
-              ref={imageRef}
-              src="/images/about.avif"
-              alt="LEOS construction and project management team at work"
-              fill
-              quality={88}
-              sizes="(max-width: 900px) 100vw, 50vw"
-              className={styles.image}
-            />
+            <div className={styles.photo}>
+              <Image
+                ref={imageRef}
+                src="/images/about.avif"
+                alt="LEOS construction and project management team at work"
+                fill
+                quality={88}
+                sizes="100vw"
+                className={styles.image}
+              />
+            </div>
 
-            <div className={styles.badge} data-teaser-badge>
+            <div className={styles.brandBox} aria-hidden="true">
+              <Image
+                src="/logos/leos-logo-gold.svg"
+                alt=""
+                width={140}
+                height={159}
+                className={styles.brandLogo}
+              />
+            </div>
+
+            {/* <div className={styles.badge} data-teaser-badge>
               <span className={styles.badgeNumber}>500+</span>
               <span className={styles.badgeLabel}>Projects Delivered</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -12,9 +12,9 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <BrandStatement />
-
       <AboutTeaser />
+
+      <BrandStatement />
 
       <StatsCounter />
 

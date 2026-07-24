@@ -239,8 +239,8 @@ export default function Hero() {
         <p className={styles.eyebrow}>LEOS Project Management</p>
 
         <h1 id="hero-title" className={styles.title}>
-          Building With Purpose.
-          <span>Delivering With Precision.</span>
+          Building With <span>Purpose.</span><br/>
+          Delivering With <span>Precision.</span>
         </h1>
 
         <p className={styles.description}>
