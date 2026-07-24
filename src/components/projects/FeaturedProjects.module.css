@@ -97,7 +97,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: clamp(18px, 2.2vw, 30px);
 }
 
@@ -112,7 +112,7 @@
 .cardMedia {
   position: relative;
 
-  aspect-ratio: 0.82;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
 
   border: 1px solid rgb(201 161 93 / 28%);

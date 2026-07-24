@@ -41,4 +41,18 @@ export const projects = [
     afterPosition: "54% center",
     reveal: 63,
   },
+  {
+    number: "04",
+    category: "Apartment Renovation",
+    title: "A Smaller Space, Thoughtfully Reworked.",
+    description:
+      "A full apartment renovation focused on smarter storage, better light and finishes that feel considered throughout.",
+    location: "Sharjah, UAE",
+    scope: "Interiors & Storage",
+    before: "/images/about.avif",
+    after: "/images/hero.avif",
+    beforePosition: "35% center",
+    afterPosition: "45% center",
+    reveal: 48,
+  },
 ];
