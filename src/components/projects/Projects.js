@@ -1,17 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 
 import { gsap, useGSAP } from "@/lib/gsap";
 import { projects } from "@/data/projects";
+import CompareSlider from "./CompareSlider";
 import styles from "./Projects.module.css";
 
 /*
- * Clean, editorial project gallery: one full-bleed "after" photo per
- * project with a small inset "before" chip, caption on the image,
- * and a slow parallax zoom. Replaces the earlier drag-to-reveal
- * comparison card design.
+ * Clean, editorial project gallery: a draggable before/after photo
+ * per project, caption on the image, and a slow parallax zoom on the
+ * "after" photo.
  */
 export default function Projects() {
   const sectionRef = useRef(null);
@@ -55,8 +54,8 @@ export default function Projects() {
 
       const storyTweens = stories.map((story) => {
         const media = story.querySelector("[data-project-media]");
-        const chip = story.querySelector("[data-project-chip]");
         const details = story.querySelector("[data-project-details]");
+        const parallaxImage = story.querySelector("[data-project-parallax]");
 
         const entrance = gsap.fromTo(
           [media, details],
@@ -71,23 +70,9 @@ export default function Projects() {
           },
         );
 
-        const chipTween = chip
+        const parallax = parallaxImage
           ? gsap.fromTo(
-              chip,
-              { autoAlpha: 0, y: 24 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.8,
-                ease: "power3.out",
-                scrollTrigger: { trigger: story, start: "top 74%" },
-              },
-            )
-          : null;
-
-        const parallax = media
-          ? gsap.fromTo(
-              media.querySelector("img"),
+              parallaxImage,
               { scale: 1.15 },
               {
                 scale: 1,
@@ -102,14 +87,13 @@ export default function Projects() {
             )
           : null;
 
-        return { entrance, chipTween, parallax };
+        return { entrance, parallax };
       });
 
       return () => {
         introTween.kill();
-        storyTweens.forEach(({ entrance, chipTween, parallax }) => {
+        storyTweens.forEach(({ entrance, parallax }) => {
           entrance.kill();
-          chipTween?.kill();
           parallax?.kill();
         });
       };
@@ -144,15 +128,7 @@ export default function Projects() {
               data-project-story
             >
               <div className={styles.media} data-project-media>
-                <Image
-                  src={project.after}
-                  alt={`${project.title} after renovation`}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 767px) 100vw, 90vw"
-                  className={styles.image}
-                  style={{ objectPosition: project.afterPosition }}
-                />
+                <CompareSlider project={project} />
 
                 <div className={styles.scrim} aria-hidden="true" />
 
@@ -164,18 +140,6 @@ export default function Projects() {
                     </p>
                     <h3>{project.title}</h3>
                   </div>
-                </div>
-
-                <div className={styles.beforeChip} data-project-chip>
-                  <Image
-                    src={project.before}
-                    alt={`${project.title} before renovation`}
-                    fill
-                    quality={70}
-                    sizes="150px"
-                    className={styles.image}
-                    style={{ objectPosition: project.beforePosition }}
-                  />
                 </div>
               </div>
 

@@ -84,8 +84,6 @@ export default function StatsCounter() {
 
   return (
     <section ref={sectionRef} className={styles.stats}>
-      <div className={styles.glow} aria-hidden="true" />
-
       <div className={styles.container}>
         <div className={styles.grid}>
           {stats.map((stat) => (
