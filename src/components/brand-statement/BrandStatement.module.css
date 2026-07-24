@@ -26,6 +26,13 @@
   will-change: transform;
 }
 
+.slide {
+  position: absolute;
+  inset: 0;
+
+  will-change: opacity;
+}
+
 .image {
   object-fit: cover;
 }
@@ -95,6 +102,57 @@
   will-change: transform, opacity;
 }
 
+.dots {
+  position: absolute;
+  right: clamp(24px, 6vw, 90px);
+  bottom: clamp(24px, 4vw, 44px);
+  z-index: 3;
+
+  display: flex;
+  gap: 14px;
+}
+
+.dot {
+  display: flex;
+  align-items: center;
+
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.dotTrack {
+  position: relative;
+
+  width: 42px;
+  height: 2px;
+
+  overflow: hidden;
+
+  background: rgb(248 246 242 / 28%);
+}
+
+.dotFill {
+  position: absolute;
+  inset: 0;
+
+  transform: scaleX(0);
+  transform-origin: left center;
+
+  background: var(--leos-gold);
+}
+
+.dot[aria-selected="true"] .dotTrack {
+  background: rgb(248 246 242 / 46%);
+}
+
+.dot:focus-visible {
+  outline: 1px solid var(--leos-gold);
+  outline-offset: 4px;
+}
+
 @media (max-width: 767px) {
   .statement {
     height: 78svh;
@@ -104,6 +162,15 @@
   .tagline {
     max-width: 320px;
     font-size: 16px;
+  }
+
+  .dots {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  .dotTrack {
+    width: 28px;
   }
 }
 
@@ -118,5 +185,9 @@
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
+  }
+
+  .dots {
+    display: none;
   }
 }
