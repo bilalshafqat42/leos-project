@@ -48,8 +48,14 @@ export default function ServicesTeaser() {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1024px)", () => {
+        /*
+         * Measure against the track's own container, not the sticky
+         * viewport itself — the container is centered and narrower
+         * than the viewport, so using the viewport width here left
+         * the last card a bit short of fully clearing into view.
+         */
         const getMaxScroll = () =>
-          Math.max(0, track.scrollWidth - sticky.clientWidth);
+          Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
 
         const scrollTween = gsap.to(track, {
           x: () => -getMaxScroll(),
@@ -58,7 +64,7 @@ export default function ServicesTeaser() {
             trigger: sticky,
             start: "top top",
             end: () => `+=${getMaxScroll()}`,
-            scrub: 1,
+            scrub: true,
             pin: true,
             invalidateOnRefresh: true,
           },
