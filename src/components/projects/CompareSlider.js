@@ -10,6 +10,8 @@ import styles from "./Projects.module.css";
  * on top of the full "after" photo, and the handle controls how much
  * of it shows. Drag or use the arrow keys.
  */
+const DRAG_THRESHOLD = 4;
+
 export default function CompareSlider({
   project,
   imageClassName,
@@ -17,6 +19,8 @@ export default function CompareSlider({
 }) {
   const containerRef = useRef(null);
   const draggingRef = useRef(false);
+  const draggedRef = useRef(false);
+  const startXRef = useRef(0);
   const [reveal, setReveal] = useState(project.reveal ?? 50);
 
   const applyFromClientX = useCallback((clientX) => {
@@ -29,35 +33,44 @@ export default function CompareSlider({
     setReveal(Math.min(96, Math.max(4, percent)));
   }, []);
 
-  const handlePointerDown = useCallback(
-    (event) => {
-      // Several cards wrap this slider in a Link — stop the drag from
-      // bubbling into a navigation click.
-      event.stopPropagation();
-      draggingRef.current = true;
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-      applyFromClientX(event.clientX);
-    },
-    [applyFromClientX],
-  );
+  const handlePointerDown = useCallback((event) => {
+    draggingRef.current = true;
+    draggedRef.current = false;
+    startXRef.current = event.clientX;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  }, []);
 
   const handlePointerMove = useCallback(
     (event) => {
       if (!draggingRef.current) return;
-      event.stopPropagation();
-      applyFromClientX(event.clientX);
+
+      if (
+        draggedRef.current ||
+        Math.abs(event.clientX - startXRef.current) > DRAG_THRESHOLD
+      ) {
+        // Some cards wrap this slider in a Link — once this is a real
+        // drag (not just a tap), stop it from bubbling into a
+        // navigation click.
+        event.stopPropagation();
+        draggedRef.current = true;
+        applyFromClientX(event.clientX);
+      }
     },
     [applyFromClientX],
   );
 
   const handlePointerUp = useCallback((event) => {
-    event.stopPropagation();
     draggingRef.current = false;
+    if (draggedRef.current) {
+      event.stopPropagation();
+    }
   }, []);
 
   const handleClick = useCallback((event) => {
-    event.stopPropagation();
-    event.preventDefault();
+    if (draggedRef.current) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }, []);
 
   const handleKeyDown = useCallback((event) => {
@@ -72,7 +85,15 @@ export default function CompareSlider({
 
   return (
     <>
-      <div ref={containerRef} className={styles.compare}>
+      <div
+        ref={containerRef}
+        className={styles.compare}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClick={handleClick}
+      >
         <div className={styles.compareLayer}>
           <Image
             src={project.after}

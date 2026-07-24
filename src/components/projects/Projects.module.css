@@ -107,6 +107,9 @@
   gap: 16px;
 
   color: var(--leos-white);
+
+  /* Text only, no interactive children — let drag/click reach the slider below it. */
+  pointer-events: none;
 }
 
 .captionTopline {
@@ -138,6 +141,9 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+
+  cursor: ew-resize;
+  touch-action: pan-y;
 }
 
 .compareLayer {
@@ -159,7 +165,6 @@
   z-index: 4;
 
   padding: 9px 18px;
-  border-radius: 999px;
 
   font-size: var(--type-label-sm);
   font-weight: 700;
