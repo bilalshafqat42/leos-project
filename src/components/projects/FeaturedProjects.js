@@ -75,6 +75,11 @@ export default function FeaturedProjects() {
               href="/services#projects"
               className={styles.card}
               data-featured-item
+              // Browsers treat this whole anchor as a native drag
+              // source once the image inside it is draggable=false —
+              // block that so dragging the slider handle doesn't turn
+              // into "drag this link" instead.
+              onDragStart={(event) => event.preventDefault()}
             >
               <div className={styles.cardMedia}>
                 <CompareSlider

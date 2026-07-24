@@ -83,6 +83,14 @@ export default function CompareSlider({
     }
   }, []);
 
+  // Cards that wrap this slider in a <Link> sit inside an <a> tag, and
+  // browsers natively try to "drag the link" when you drag an image
+  // inside an anchor — that hijacks the gesture before our pointer
+  // handlers ever see the move. Block the native drag entirely.
+  const handleDragStart = useCallback((event) => {
+    event.preventDefault();
+  }, []);
+
   return (
     <>
       <div
@@ -93,6 +101,7 @@ export default function CompareSlider({
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onClick={handleClick}
+        onDragStart={handleDragStart}
       >
         <div className={styles.compareLayer}>
           <Image
@@ -104,6 +113,7 @@ export default function CompareSlider({
             className={imageClassName ?? styles.image}
             style={{ objectPosition: project.afterPosition }}
             data-project-parallax
+            draggable={false}
           />
         </div>
 
@@ -119,6 +129,7 @@ export default function CompareSlider({
             sizes={sizes}
             className={imageClassName ?? styles.image}
             style={{ objectPosition: project.beforePosition }}
+            draggable={false}
           />
         </div>
       </div>
@@ -148,6 +159,7 @@ export default function CompareSlider({
           onPointerCancel={handlePointerUp}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
+          onDragStart={handleDragStart}
         >
           <span className={styles.handleGrip} aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
