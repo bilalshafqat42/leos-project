@@ -1,16 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
 import { projects } from "@/data/projects";
 import { gsap, useGSAP } from "@/lib/gsap";
+import CompareSlider from "./CompareSlider";
 import styles from "./FeaturedProjects.module.css";
 
 /*
- * Condensed, static proof-of-work strip for the Home page. The full
- * drag-to-reveal before/after gallery lives on /services.
+ * Condensed proof-of-work strip for the Home page, using the same
+ * drag-to-reveal before/after slider as the full gallery on /services.
  */
 export default function FeaturedProjects() {
   const sectionRef = useRef(null);
@@ -77,14 +77,10 @@ export default function FeaturedProjects() {
               data-featured-item
             >
               <div className={styles.cardMedia}>
-                <Image
-                  src={project.after}
-                  alt={`${project.title} after renovation`}
-                  fill
-                  quality={85}
+                <CompareSlider
+                  project={project}
+                  imageClassName={styles.cardImage}
                   sizes="(max-width: 900px) 100vw, 33vw"
-                  className={styles.cardImage}
-                  style={{ objectPosition: project.afterPosition }}
                 />
               </div>
 

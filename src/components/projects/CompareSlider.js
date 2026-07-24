@@ -10,7 +10,11 @@ import styles from "./Projects.module.css";
  * on top of the full "after" photo, and the handle controls how much
  * of it shows. Drag or use the arrow keys.
  */
-export default function CompareSlider({ project }) {
+export default function CompareSlider({
+  project,
+  imageClassName,
+  sizes = "(max-width: 767px) 100vw, 90vw",
+}) {
   const containerRef = useRef(null);
   const draggingRef = useRef(false);
   const [reveal, setReveal] = useState(project.reveal ?? 50);
@@ -27,6 +31,9 @@ export default function CompareSlider({ project }) {
 
   const handlePointerDown = useCallback(
     (event) => {
+      // Several cards wrap this slider in a Link — stop the drag from
+      // bubbling into a navigation click.
+      event.stopPropagation();
       draggingRef.current = true;
       event.currentTarget.setPointerCapture?.(event.pointerId);
       applyFromClientX(event.clientX);
@@ -37,13 +44,20 @@ export default function CompareSlider({ project }) {
   const handlePointerMove = useCallback(
     (event) => {
       if (!draggingRef.current) return;
+      event.stopPropagation();
       applyFromClientX(event.clientX);
     },
     [applyFromClientX],
   );
 
-  const handlePointerUp = useCallback(() => {
+  const handlePointerUp = useCallback((event) => {
+    event.stopPropagation();
     draggingRef.current = false;
+  }, []);
+
+  const handleClick = useCallback((event) => {
+    event.stopPropagation();
+    event.preventDefault();
   }, []);
 
   const handleKeyDown = useCallback((event) => {
@@ -65,8 +79,8 @@ export default function CompareSlider({ project }) {
             alt={`${project.title} after renovation`}
             fill
             quality={88}
-            sizes="(max-width: 767px) 100vw, 90vw"
-            className={styles.image}
+            sizes={sizes}
+            className={imageClassName ?? styles.image}
             style={{ objectPosition: project.afterPosition }}
             data-project-parallax
           />
@@ -81,8 +95,8 @@ export default function CompareSlider({ project }) {
             alt={`${project.title} before renovation`}
             fill
             quality={88}
-            sizes="(max-width: 767px) 100vw, 90vw"
-            className={styles.image}
+            sizes={sizes}
+            className={imageClassName ?? styles.image}
             style={{ objectPosition: project.beforePosition }}
           />
         </div>
@@ -111,6 +125,7 @@ export default function CompareSlider({ project }) {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
+          onClick={handleClick}
           onKeyDown={handleKeyDown}
         >
           <span className={styles.handleGrip} aria-hidden="true">
