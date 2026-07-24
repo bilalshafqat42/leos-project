@@ -14,11 +14,11 @@ export default function HomePage() {
 
       <AboutTeaser />
 
+      <ServicesTeaser />
+
       <BrandStatement />
 
       <StatsCounter />
-
-      <ServicesTeaser />
 
       <FeaturedProjects />
 

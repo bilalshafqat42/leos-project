@@ -12,7 +12,7 @@
 
   height: 100vh;
   height: 100svh;
-  padding: clamp(48px, 7vw, 90px) 0;
+  padding: clamp(96px, 13vh, 120px) 0 clamp(28px, 5vh, 56px);
 
   overflow: hidden;
 }
@@ -28,7 +28,7 @@
   gap: clamp(40px, 8vw, 120px);
   align-items: end;
 
-  margin-bottom: clamp(48px, 7vw, 90px);
+  margin-bottom: clamp(24px, 4vh, 48px);
 }
 
 .eyebrow {
@@ -120,8 +120,8 @@
   position: relative;
 
   display: block;
-  width: clamp(280px, 27vw, 380px);
-  aspect-ratio: 1.05;
+  width: clamp(300px, 38vw, 540px);
+  height: clamp(420px, 64vh, 660px);
   overflow: hidden;
   flex-shrink: 0;
 
@@ -208,6 +208,7 @@
 
   .card {
     width: auto;
+    height: auto;
     aspect-ratio: 0.95;
   }
 }
