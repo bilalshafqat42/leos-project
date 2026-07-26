@@ -7,11 +7,34 @@ import styles from "./FloatingActions.module.css";
 
 const WHATSAPP_NUMBER = "971544339700";
 
+// UAE mobile (5XXXXXXXX) or landline (2/3/4/6/7/9 + 7 digits), with or
+// without a +971/971/0 prefix, e.g. "050 123 4567", "04 345 1234",
+// "+971 50 123 4567".
+const UAE_PHONE_PATTERN = /^(?:\+?971|0)?(?:5\d{8}|[234679]\d{7})$/;
+
+// Numbers from outside the UAE: require an explicit "+" and country code
+// so it's unambiguous, roughly matching the international E.164 shape.
+const INTERNATIONAL_PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
+
+function isValidPhoneNumber(value) {
+  const digits = value.replace(/[\s\-()]/g, "");
+  return (
+    UAE_PHONE_PATTERN.test(digits) || INTERNATIONAL_PHONE_PATTERN.test(digits)
+  );
+}
+
+const SERVICE_LIST_TEXT = services
+  .map((service, index) => `${index + 1}. ${service.title}`)
+  .join("\n");
+
 const STEP_PROMPTS = {
   name: "Hi! I'm the LEOS assistant. What's your name?",
   phone: (name) =>
     `Nice to meet you, ${name}. What's the best phone number to reach you on?`,
-  service: "Great, thanks. Which service are you looking for?",
+  invalidPhone:
+    "That doesn't look like a valid phone number. For a UAE number, try 050 123 4567 or 04 345 1234. From outside the UAE, include your country code, e.g. +44 7911 123456.",
+  service: `Great, thanks. Which service are you looking for? Reply with a number, or tap one below.\n\n${SERVICE_LIST_TEXT}`,
+  invalidService: `Please reply with a number from 1 to ${services.length}, or tap one of the services below.`,
 };
 
 function createInitialMessages() {
@@ -119,6 +142,14 @@ export default function FloatingActions() {
     }
   }
 
+  function submitService(title) {
+    const data = { ...formData, service: title };
+    setFormData(data);
+    setMessages((current) => [...current, { role: "user", text: title }]);
+    setStep("sending");
+    submitEnquiry(data);
+  }
+
   function handleTextSubmit(event) {
     event.preventDefault();
 
@@ -133,7 +164,21 @@ export default function FloatingActions() {
       ]);
       setFormData((current) => ({ ...current, name: value }));
       setStep("phone");
-    } else if (step === "phone") {
+      setDraft("");
+      return;
+    }
+
+    if (step === "phone") {
+      if (!isValidPhoneNumber(value)) {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: value },
+          { role: "bot", text: STEP_PROMPTS.invalidPhone },
+        ]);
+        setDraft("");
+        return;
+      }
+
       setMessages((current) => [
         ...current,
         { role: "user", text: value },
@@ -141,21 +186,44 @@ export default function FloatingActions() {
       ]);
       setFormData((current) => ({ ...current, phone: value }));
       setStep("service");
+      setDraft("");
+      return;
     }
 
-    setDraft("");
+    if (step === "service") {
+      const choice = Number.parseInt(value, 10);
+
+      if (
+        !Number.isInteger(choice) ||
+        choice < 1 ||
+        choice > services.length
+      ) {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: value },
+          { role: "bot", text: STEP_PROMPTS.invalidService },
+        ]);
+        setDraft("");
+        return;
+      }
+
+      submitService(services[choice - 1].title);
+      setDraft("");
+    }
   }
 
   function handleServiceSelect(title) {
-    const data = { ...formData, service: title };
-    setFormData(data);
-    setMessages((current) => [...current, { role: "user", text: title }]);
-    setStep("sending");
-    submitEnquiry(data);
+    submitService(title);
   }
 
-  const placeholder = step === "name" ? "Type your name…" : "Type your number…";
-  const showTextInput = step === "name" || step === "phone";
+  const placeholder =
+    step === "name"
+      ? "Type your name…"
+      : step === "phone"
+        ? "Type your phone number…"
+        : "Type a number (1-7)…";
+  const showTextInput =
+    step === "name" || step === "phone" || step === "service";
 
   return (
     <div className={styles.dock}>

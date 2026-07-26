@@ -5,16 +5,30 @@ import { NextResponse } from "next/server";
  * (src/components/floating-actions/FloatingActions.js).
  *
  * Sends the enquiry by email via the Resend HTTP API (https://resend.com),
- * the same service used by src/app/api/contact/route.js.
+ * the same service used by src/app/api/contact/route.js. Enquiries go to
+ * both the main business inbox and the chat-specific inbox.
  *
  * Required environment variables (see .env.example):
  *   RESEND_API_KEY     - secret API key from your Resend account
+ *   CONTACT_TO_EMAIL   - main business inbox (shared with the Contact form)
  *   CHATBOT_TO_EMAIL   - inbox that should receive chat widget enquiries
  *   CONTACT_FROM_EMAIL - a "from" address on a domain verified in Resend
  */
 
-const DEFAULT_TO_EMAIL = "leos.project.uae@gmail.com";
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEFAULT_CONTACT_EMAIL = "info@leosproject.ae";
+const DEFAULT_CHATBOT_EMAIL = "leos.project.uae@gmail.com";
+
+// Same validation the client applies — kept here too since the client-side
+// check can always be bypassed by calling this endpoint directly.
+const UAE_PHONE_PATTERN = /^(?:\+?971|0)?(?:5\d{8}|[234679]\d{7})$/;
+const INTERNATIONAL_PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
+
+function isValidPhoneNumber(value) {
+  const digits = value.replace(/[\s\-()]/g, "");
+  return (
+    UAE_PHONE_PATTERN.test(digits) || INTERNATIONAL_PHONE_PATTERN.test(digits)
+  );
+}
 
 export async function POST(request) {
   let body;
@@ -39,8 +53,14 @@ export async function POST(request) {
     );
   }
 
+  if (!isValidPhoneNumber(phone)) {
+    return NextResponse.json(
+      { error: "Please enter a valid phone number." },
+      { status: 400 },
+    );
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CHATBOT_TO_EMAIL || DEFAULT_TO_EMAIL;
   const fromEmail = process.env.CONTACT_FROM_EMAIL;
 
   if (!apiKey || !fromEmail) {
@@ -57,12 +77,16 @@ export async function POST(request) {
     );
   }
 
-  const replyTo = EMAIL_PATTERN.test(phone) ? phone : undefined;
+  const toEmails = [
+    ...new Set([
+      process.env.CONTACT_TO_EMAIL || DEFAULT_CONTACT_EMAIL,
+      process.env.CHATBOT_TO_EMAIL || DEFAULT_CHATBOT_EMAIL,
+    ]),
+  ];
 
   const emailPayload = {
     from: fromEmail,
-    to: [toEmail],
-    reply_to: replyTo,
+    to: toEmails,
     subject: `New chat enquiry: ${service} — ${name}`,
     text: [
       `Name: ${name}`,

@@ -150,6 +150,7 @@
 
   font-size: var(--type-body-sm);
   line-height: var(--lh-body-sm);
+  white-space: pre-line;
 }
 
 .bubbleBot {
