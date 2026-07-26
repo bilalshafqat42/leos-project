@@ -111,8 +111,15 @@ export default function Contact() {
               <strong>info@leosproject.ae</strong>
             </a>
             <div>
-              <span>Location</span>
-              <strong>Ajman, United Arab Emirates</strong>
+              <span>Ajman Office</span>
+              <strong>
+                Office # AMC-BL-B.C-6010961, AMC-Boulevard-A Building, Ajman
+                Media City District, Ajman Corniche, Ajman, UAE
+              </strong>
+            </div>
+            <div>
+              <span>Dubai Office</span>
+              <strong>Al Braha Building, Deira, Dubai, UAE</strong>
             </div>
           </div>
         </div>

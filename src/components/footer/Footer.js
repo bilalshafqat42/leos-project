@@ -90,19 +90,19 @@ export default function Footer() {
 
             <div className="mt-7 flex gap-3">
               <SocialLink href="#" label="Instagram">
-                IG
+                <InstagramIcon />
               </SocialLink>
 
               <SocialLink href="#" label="Facebook">
-                FB
+                <FacebookIcon />
               </SocialLink>
 
               <SocialLink href="#" label="LinkedIn">
-                IN
+                <LinkedInIcon />
               </SocialLink>
 
               <SocialLink href="#" label="YouTube">
-                YT
+                <YouTubeIcon />
               </SocialLink>
             </div>
           </div>
@@ -157,8 +157,13 @@ export default function Footer() {
                 </a>
               </ContactItem>
 
-              <ContactItem title="Location">
-                Ajman, United Arab Emirates
+              <ContactItem title="Ajman Office">
+                Office # AMC-BL-B.C-6010961, AMC-Boulevard-A Building, Ajman
+                Media City District, Ajman Corniche, Ajman, UAE
+              </ContactItem>
+
+              <ContactItem title="Dubai Office">
+                Al Braha Building, Deira, Dubai, UAE
               </ContactItem>
 
               <ContactItem title="Working Hours">
@@ -227,12 +232,67 @@ function ContactItem({ title, children }) {
 
 function SocialLink({ href, label, children }) {
   return (
-    <Link
+    <a
       href={href}
-      aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[length:var(--type-label-sm)] font-semibold tracking-[0.08em] transition-all hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1F1F1F]"
+      aria-label={`Follow LEOS on ${label}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex h-10 w-10 items-center justify-center border border-white/20 text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C9A15D] hover:bg-[#C9A15D] hover:text-[#1F1F1F] focus-visible:-translate-y-0.5 focus-visible:border-[#C9A15D] focus-visible:bg-[#C9A15D] focus-visible:text-[#1F1F1F]"
     >
-      {children}
-    </Link>
+      <span className="h-[18px] w-[18px]" aria-hidden="true">
+        {children}
+      </span>
+    </a>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-full w-full"
+    >
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17" cy="7" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-full w-full">
+      <path d="M13.5 21v-8.2h2.75l.41-3.2H13.5V7.55c0-.93.26-1.55 1.6-1.55h1.7V3.14C16.5 3.1 15.55 3 14.44 3 12.12 3 10.5 4.41 10.5 7.24v2.36H7.75v3.2h2.75V21h3z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-full w-full">
+      <path d="M7.1 9.1H4V20h3.1V9.1zM5.55 4C4.48 4 3.7 4.78 3.7 5.78c0 .97.76 1.78 1.83 1.78h.02c1.1 0 1.83-.81 1.83-1.78C7.36 4.78 6.65 4 5.55 4zM20.3 13.9c0-3.05-1.63-4.47-3.8-4.47-1.75 0-2.54 1-2.98 1.68V9.1H10.4c.04.9 0 10.9 0 10.9h3.12v-6.1c0-.33.02-.65.12-.89.27-.65.87-1.34 1.9-1.34 1.34 0 1.87 1.04 1.87 2.56V20h3.12l-.23-6.1z" />
+    </svg>
+  );
+}
+
+function YouTubeIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-full w-full"
+    >
+      <rect x="2.5" y="6" width="19" height="12" rx="3.5" />
+      <path d="M10.2 9.7v4.6l4.1-2.3z" fill="currentColor" stroke="none" />
+    </svg>
   );
 }
