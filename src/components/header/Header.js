@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useBookingModal } from "@/components/booking-modal/booking-modal-context";
+import { services } from "@/data/services";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -14,6 +15,14 @@ const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Contact", href: "/contact" },
+];
+
+const serviceMenuLinks = [
+  { label: "All Services", href: "/services" },
+  ...services.map((service) => ({
+    label: service.title,
+    href: `/services/${service.slug}`,
+  })),
 ];
 
 export default function Header() {
@@ -25,8 +34,10 @@ export default function Header() {
   const menuTimelineRef = useRef(null);
   const menuButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const lastTriggerRef = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuMode, setMenuMode] = useState("all");
   const [scrolled, setScrolled] = useState(false);
 
   const prefersReducedMotion = useCallback(() => {
@@ -125,15 +136,20 @@ export default function Header() {
     { scope: menuRef },
   );
 
-  const openMenu = useCallback(() => {
+  const openMenu = useCallback((mode = "all", triggerEl) => {
     const menu = menuRef.current;
 
     if (!menu || menuOpen) return;
 
+    setMenuMode(mode);
+    lastTriggerRef.current = triggerEl ?? menuButtonRef.current;
+
     const reduceMotion = prefersReducedMotion();
 
     const menuTop = gsap.utils.toArray(menu.querySelectorAll("[data-menu-top]"));
-    const menuLinks = gsap.utils.toArray(menu.querySelectorAll("[data-menu-link]"));
+    const menuLinks = gsap.utils.toArray(
+      menu.querySelectorAll(`[data-menu-list="${mode}"] [data-menu-link]`),
+    );
     const menuFooter = gsap.utils.toArray(menu.querySelectorAll("[data-menu-footer]"));
 
     menuTimelineRef.current?.kill();
@@ -209,7 +225,9 @@ export default function Header() {
       const reduceMotion = prefersReducedMotion();
 
       const menuTop = gsap.utils.toArray(menu.querySelectorAll("[data-menu-top]"));
-      const menuLinks = gsap.utils.toArray(menu.querySelectorAll("[data-menu-link]"));
+      const menuLinks = gsap.utils.toArray(
+        menu.querySelectorAll(`[data-menu-list="${menuMode}"] [data-menu-link]`),
+      );
       const menuFooter = gsap.utils.toArray(menu.querySelectorAll("[data-menu-footer]"));
 
       menuTimelineRef.current?.kill();
@@ -230,11 +248,14 @@ export default function Header() {
 
         document.body.style.overflow = "";
         setMenuOpen(false);
+        setMenuMode("all");
 
         if (typeof afterClose === "function") {
           afterClose();
         } else {
-          menuButtonRef.current?.focus({ preventScroll: true });
+          (lastTriggerRef.current ?? menuButtonRef.current)?.focus({
+            preventScroll: true,
+          });
         }
       };
 
@@ -275,8 +296,12 @@ export default function Header() {
 
       menuTimelineRef.current = timeline;
     },
-    [prefersReducedMotion],
+    [prefersReducedMotion, menuMode],
   );
+
+  const switchMenuMode = useCallback((mode) => {
+    setMenuMode((current) => (current === mode ? current : mode));
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -337,6 +362,15 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
+                  aria-haspopup={item.label === "Services" ? "true" : undefined}
+                  onClick={
+                    item.label === "Services"
+                      ? (event) => {
+                          event.preventDefault();
+                          openMenu("services", event.currentTarget);
+                        }
+                      : undefined
+                  }
                   className={`text-[length:var(--type-label)] font-semibold uppercase tracking-[var(--ls-label)] transition-colors duration-300 hover:text-[#C9A15D] ${
                     isActive(item.href) ? "text-[#C9A15D]" : "text-white/85"
                   }`}
@@ -362,7 +396,7 @@ export default function Header() {
               aria-label="Open navigation menu"
               aria-expanded={menuOpen}
               aria-controls="leos-navigation-menu"
-              onClick={openMenu}
+              onClick={() => openMenu("all", menuButtonRef.current)}
               className="group flex min-h-11 items-center gap-3 border-0 bg-transparent p-0 text-white outline-none focus-visible:ring-1 focus-visible:ring-[#C9A15D]"
             >
               <span aria-hidden="true" className="flex w-7 flex-col gap-[6px]">
@@ -418,17 +452,82 @@ export default function Header() {
 
           <nav
             aria-label="Full navigation"
-            className="flex min-h-0 flex-1 items-center py-5 sm:py-7 lg:py-8"
+            className="flex min-h-0 flex-1 items-center overflow-y-auto py-5 sm:py-7 lg:py-8"
           >
-            <ul className="m-0 flex list-none flex-col gap-1 p-0 sm:gap-2">
-              {navLinks.map((item, index) => (
+            <ul
+              data-menu-list="all"
+              className={`m-0 flex list-none flex-col gap-1 p-0 sm:gap-2 ${
+                menuMode === "all" ? "" : "hidden"
+              }`}
+            >
+              {navLinks.map((item, index) => {
+                const isServicesItem = item.label === "Services";
+
+                return (
+                  <li key={item.href} data-menu-link>
+                    <Link
+                      href={item.href}
+                      onClick={
+                        isServicesItem
+                          ? (event) => {
+                              event.preventDefault();
+                              switchMenuMode("services");
+                            }
+                          : () => closeMenu()
+                      }
+                      tabIndex={menuOpen && menuMode === "all" ? 0 : -1}
+                      aria-current={isActive(item.href) ? "page" : undefined}
+                      aria-haspopup={isServicesItem ? "true" : undefined}
+                      className="group flex items-center gap-4 font-serif text-[60px] leading-[1.15] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none"
+                    >
+                      <span className="w-0 overflow-hidden text-[length:var(--type-label-sm)] font-semibold tracking-[var(--ls-label-sm)] text-[#C9A15D] opacity-0 transition-all duration-500 group-hover:w-8 group-hover:opacity-100">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+              <li data-menu-link className="mt-10">
+                <button
+                  type="button"
+                  onClick={handleBookClick}
+                  tabIndex={menuOpen && menuMode === "all" ? 0 : -1}
+                  className="group inline-flex min-h-12 items-center justify-center border border-[#C9A15D] bg-transparent px-7 text-[15px] font-semibold uppercase tracking-[var(--ls-label)] !text-[#C9A15D] transition-all duration-300 ease-out hover:bg-[#C9A15D] hover:!text-[#1F1F1F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A15D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1F1F1F]"
+                >
+                  <span className="transition-transform duration-300 group-hover:-translate-y-px">
+                    Book a Free Site Visit
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul
+              data-menu-list="services"
+              className={`m-0 flex list-none flex-col gap-1 p-0 sm:gap-2 ${
+                menuMode === "services" ? "" : "hidden"
+              }`}
+            >
+              <li data-menu-link>
+                <button
+                  type="button"
+                  onClick={() => switchMenuMode("all")}
+                  tabIndex={menuOpen && menuMode === "services" ? 0 : -1}
+                  className="group mb-3 inline-flex items-center gap-2 text-[length:var(--type-label-sm)] font-semibold uppercase tracking-[var(--ls-label-sm)] text-white/45 transition-colors duration-300 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none sm:mb-6"
+                >
+                  <span aria-hidden="true">←</span>
+                  <span>All Pages</span>
+                </button>
+              </li>
+
+              {serviceMenuLinks.map((item, index) => (
                 <li key={item.href} data-menu-link>
                   <Link
                     href={item.href}
                     onClick={() => closeMenu()}
-                    tabIndex={menuOpen ? 0 : -1}
+                    tabIndex={menuOpen && menuMode === "services" ? 0 : -1}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className="group flex items-center gap-4 font-serif text-[60px] leading-[1.15] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none"
+                    className="group flex items-center gap-4 font-serif text-[24px] leading-[1.15] text-white/75 transition-all duration-500 hover:translate-x-2 hover:text-[#C9A15D] focus-visible:text-white focus-visible:outline-none sm:text-[32px] lg:text-[40px]"
                   >
                     <span className="w-0 overflow-hidden text-[length:var(--type-label-sm)] font-semibold tracking-[var(--ls-label-sm)] text-[#C9A15D] opacity-0 transition-all duration-500 group-hover:w-8 group-hover:opacity-100">
                       {String(index + 1).padStart(2, "0")}
@@ -437,11 +536,11 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              <li data-menu-link className="mt-10">
+              <li data-menu-link className="mt-4 sm:mt-8">
                 <button
                   type="button"
                   onClick={handleBookClick}
-                  tabIndex={menuOpen ? 0 : -1}
+                  tabIndex={menuOpen && menuMode === "services" ? 0 : -1}
                   className="group inline-flex min-h-12 items-center justify-center border border-[#C9A15D] bg-transparent px-7 text-[15px] font-semibold uppercase tracking-[var(--ls-label)] !text-[#C9A15D] transition-all duration-300 ease-out hover:bg-[#C9A15D] hover:!text-[#1F1F1F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A15D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1F1F1F]"
                 >
                   <span className="transition-transform duration-300 group-hover:-translate-y-px">

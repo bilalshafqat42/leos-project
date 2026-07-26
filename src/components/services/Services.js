@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 
 import { services } from "@/data/services";
@@ -229,6 +230,14 @@ export default function Services() {
                 <p className={styles.description}>{service.description}</p>
 
                 <p className={styles.scope}>{service.scope}</p>
+
+                <Link
+                  href={`/services/${service.slug}`}
+                  className={styles.link}
+                >
+                  <span>Learn More</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
 
