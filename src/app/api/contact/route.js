@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
 
+import { isMailConfigured, sendMail } from "@/lib/mailer";
+
 /*
  * Handles Contact form submissions from src/components/contact/Contact.js.
  *
- * Sends the enquiry by email via the Resend HTTP API (https://resend.com).
- * No SDK dependency is required, just a verified sending domain and API key.
+ * Sends the enquiry by email via Gmail SMTP (see src/lib/mailer.js).
  *
  * Required environment variables (see .env.example):
- *   RESEND_API_KEY   - secret API key from your Resend account
- *   CONTACT_TO_EMAIL - inbox that should receive enquiries
- *   CONTACT_FROM_EMAIL - a "from" address on a domain verified in Resend
+ *   GMAIL_USER         - the Gmail address enquiries are sent from
+ *   GMAIL_APP_PASSWORD - a Google "App Password" for that account
+ *   CONTACT_TO_EMAIL   - inbox that should receive enquiries
  */
 
+const DEFAULT_TO_EMAIL = "info@leosproject.ae";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request) {
@@ -38,13 +40,9 @@ export async function POST(request) {
     );
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CONTACT_TO_EMAIL;
-  const fromEmail = process.env.CONTACT_FROM_EMAIL;
-
-  if (!apiKey || !toEmail || !fromEmail) {
+  if (!isMailConfigured()) {
     console.error(
-      "Contact form is not configured: missing RESEND_API_KEY, CONTACT_TO_EMAIL or CONTACT_FROM_EMAIL.",
+      "Contact form is not configured: missing GMAIL_APP_PASSWORD.",
     );
 
     return NextResponse.json(
@@ -56,46 +54,27 @@ export async function POST(request) {
     );
   }
 
+  const toEmail = process.env.CONTACT_TO_EMAIL || DEFAULT_TO_EMAIL;
   const replyTo = EMAIL_PATTERN.test(contact) ? contact : undefined;
 
-  const emailPayload = {
-    from: fromEmail,
-    to: [toEmail],
-    reply_to: replyTo,
-    subject: `New site visit request: ${projectType} — ${name}`,
-    text: [
-      `Name: ${name}`,
-      `Phone or email: ${contact}`,
-      `Project type: ${projectType}`,
-      "",
-      "Message:",
-      message,
-    ].join("\n"),
-  };
-
   try {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(emailPayload),
+    await sendMail({
+      to: toEmail,
+      replyTo,
+      subject: `New site visit request: ${projectType} — ${name}`,
+      text: [
+        `Name: ${name}`,
+        `Phone or email: ${contact}`,
+        `Project type: ${projectType}`,
+        "",
+        "Message:",
+        message,
+      ].join("\n"),
     });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error("Resend API error:", response.status, errorBody);
-
-      return NextResponse.json(
-        { error: "We couldn't send your enquiry. Please try again shortly." },
-        { status: 502 },
-      );
-    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Failed to reach Resend API:", error);
+    console.error("Failed to send contact form email:", error);
 
     return NextResponse.json(
       { error: "We couldn't send your enquiry. Please try again shortly." },

@@ -27,8 +27,8 @@ export const services = [
     description:
       "Complete bathroom renewals combining practical layouts, coordinated plumbing and carefully selected waterproof finishes.",
     scope: "Plumbing · Waterproofing · Finishes",
-    image: "/images/about.avif",
-    imagePosition: "72% center",
+    image: "/images/bathroom.avif",
+    imagePosition: "42% center",
     featured: true,
     overview: [
       "Bathrooms carry more coordination per square metre than almost any other room: plumbing, waterproofing, electrics and finishes all need to land in the right sequence. We manage that sequencing so nothing gets opened up twice.",
@@ -48,8 +48,8 @@ export const services = [
     description:
       "Functional, refined kitchen transformations with coordinated cabinetry, worktops, lighting and essential services.",
     scope: "Planning · Joinery · MEP",
-    image: "/images/hero.avif",
-    imagePosition: "72% center",
+    image: "/images/kitchen.avif",
+    imagePosition: "62% center",
     featured: true,
     overview: [
       "A kitchen renovation is where planning matters most: cabinetry, worktops, appliances and services all have to align precisely. We coordinate design and trades together so the finished space works exactly as intended.",
@@ -69,8 +69,8 @@ export const services = [
     description:
       "Thoughtful apartment upgrades that improve space, comfort and value while keeping every detail coordinated from start to handover.",
     scope: "Interiors · MEP · Handover",
-    image: "/images/hero.avif",
-    imagePosition: "64% center",
+    image: "/images/apartment.avif",
+    imagePosition: "50% center",
     featured: true,
     overview: [
       "Apartment renovations come with constraints villas don't: building rules, shared services and tighter access. We plan around them from day one, coordinating directly with building management to keep the programme moving.",
@@ -90,8 +90,8 @@ export const services = [
     description:
       "One accountable team managing scope, schedule, procurement, budget and communication from the first brief to final handover.",
     scope: "Planning · Supervision · Handover",
-    image: "/images/about.avif",
-    imagePosition: "center",
+    image: "/images/project.avif",
+    imagePosition: "45% center",
     overview: [
       "Not every project needs a contractor on day one, some need one accountable team overseeing contractors, consultants and suppliers on your behalf. We manage scope, schedule, procurement and budget so nothing falls between the gaps.",
       "You get a single point of contact and full visibility from the first brief to final handover, whatever the size of the project.",
@@ -110,8 +110,8 @@ export const services = [
     description:
       "Strategic upgrades for existing workplaces that improve flow, comfort and presentation while respecting daily operations.",
     scope: "Workspaces · Upgrades · Finishes",
-    image: "/images/about.avif",
-    imagePosition: "48% center",
+    image: "/images/office-renovation.avif",
+    imagePosition: "center",
     overview: [
       "Renovating an occupied workplace means balancing upgrade works against daily operations. We plan phased programmes that improve flow, comfort and presentation without stopping the business behind them.",
       "MEP, finishes and layout are upgraded together, so the result feels considered rather than patched.",
@@ -130,8 +130,8 @@ export const services = [
     description:
       "Purpose-built office interiors delivered to support your brand, daily operations and the way your team works.",
     scope: "Commercial · Workplace · Turnkey",
-    image: "/images/about.avif",
-    imagePosition: "62% center",
+    image: "/images/office-fit-out.avif",
+    imagePosition: "45% center",
     overview: [
       "A fit-out is where a brand becomes a physical space. We deliver partitioning, ceilings, flooring, MEP and technology infrastructure as one turnkey programme, built around how your team actually works.",
       "From space planning to final furniture placement, we manage every trade so the space is ready to move into on day one.",
