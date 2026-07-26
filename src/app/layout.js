@@ -4,6 +4,7 @@ import Footer from "@/components/footer/Footer";
 import Loader from "@/components/loader/Loader";
 import { BookingModalProvider } from "@/components/booking-modal/booking-modal-context";
 import BookingModal from "@/components/booking-modal/BookingModal";
+import FloatingActions from "@/components/floating-actions/FloatingActions";
 import "./globals.css";
 
 const headingFont = Libre_Baskerville({
@@ -58,6 +59,7 @@ export default function RootLayout({ children }) {
           <Footer />
 
           <BookingModal />
+          <FloatingActions />
         </BookingModalProvider>
       </body>
     </html>
