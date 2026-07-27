@@ -18,14 +18,13 @@ export default function AboutTeaser() {
 
       const media = section.querySelector("[data-teaser-media]");
       const content = section.querySelector("[data-teaser-content]");
-      const badge = section.querySelector("[data-teaser-badge]");
       const image = imageRef.current;
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (reduceMotion) {
-        gsap.set([content, badge], { autoAlpha: 1, y: 0 });
+        gsap.set(content, { autoAlpha: 1, y: 0 });
         gsap.set(media, { clipPath: "inset(0 0% 0 0%)" });
         gsap.set(image, { scale: 1 });
         return undefined;
@@ -33,7 +32,6 @@ export default function AboutTeaser() {
 
       gsap.set(media, { clipPath: "inset(0 0% 0 100%)" });
       gsap.set(image, { scale: 1.18 });
-      gsap.set(badge, { autoAlpha: 0, y: 22 });
 
       const timeline = gsap.timeline({
         scrollTrigger: { trigger: section, start: "top 75%" },
@@ -63,12 +61,6 @@ export default function AboutTeaser() {
             onComplete: () => gsap.set(image, { clearProps: "scale" }),
           },
           "<",
-        )
-        .fromTo(
-          badge,
-          { autoAlpha: 0, y: 22 },
-          { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" },
-          "-=0.55",
         );
 
       return () => timeline.kill();
@@ -122,11 +114,6 @@ export default function AboutTeaser() {
                 className={styles.brandLogo}
               />
             </div>
-
-            {/* <div className={styles.badge} data-teaser-badge>
-              <span className={styles.badgeNumber}>500+</span>
-              <span className={styles.badgeLabel}>Projects Delivered</span>
-            </div> */}
           </div>
         </div>
       </div>
