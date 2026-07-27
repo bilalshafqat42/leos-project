@@ -1,24 +1,25 @@
 import nodemailer from "nodemailer";
 
 /*
- * Shared Gmail SMTP sender for src/app/api/contact/route.js and
- * src/app/api/chatbot/route.js.
+ * Shared Titan Email (smtp.titan.email) sender for
+ * src/app/api/contact/route.js and src/app/api/chatbot/route.js.
  *
  * Required environment variables (see .env.example):
- *   GMAIL_USER         - the Gmail address enquiries are sent from
- *   GMAIL_APP_PASSWORD - a Google "App Password" for that account
- *                        (myaccount.google.com/security -> App Passwords,
- *                        requires 2-Step Verification to be enabled)
+ *   SMTP_USER     - the Titan mailbox enquiries are sent from,
+ *                   e.g. info@leosproject.ae
+ *   SMTP_PASSWORD - that mailbox's password
  */
 
-const DEFAULT_GMAIL_USER = "leos.project.uae@gmail.com";
+const DEFAULT_SMTP_USER = "info@leosproject.ae";
+const TITAN_SMTP_HOST = "smtp.titan.email";
+const TITAN_SMTP_PORT = 465;
 
 let cachedTransporter = null;
 
 function getMailConfig() {
   return {
-    user: process.env.GMAIL_USER || DEFAULT_GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
+    user: process.env.SMTP_USER || DEFAULT_SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
   };
 }
 
@@ -32,7 +33,9 @@ function getTransporter() {
   const { user, pass } = getMailConfig();
 
   cachedTransporter = nodemailer.createTransport({
-    service: "gmail",
+    host: TITAN_SMTP_HOST,
+    port: TITAN_SMTP_PORT,
+    secure: true,
     auth: { user, pass },
   });
 

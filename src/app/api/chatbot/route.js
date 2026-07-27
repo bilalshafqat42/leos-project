@@ -6,18 +6,18 @@ import { isMailConfigured, sendMail } from "@/lib/mailer";
  * Handles submissions from the floating chat widget
  * (src/components/floating-actions/FloatingActions.js).
  *
- * Sends the enquiry by email via Gmail SMTP (see src/lib/mailer.js).
+ * Sends the enquiry by email via Titan Email SMTP (see src/lib/mailer.js).
  * Enquiries go to both the main business inbox and the chat-specific inbox.
  *
  * Required environment variables (see .env.example):
- *   GMAIL_USER         - the Gmail address enquiries are sent from
- *   GMAIL_APP_PASSWORD - a Google "App Password" for that account
- *   CONTACT_TO_EMAIL   - main business inbox (shared with the Contact form)
- *   CHATBOT_TO_EMAIL   - inbox that should receive chat widget enquiries
+ *   SMTP_USER        - the Titan mailbox enquiries are sent from
+ *   SMTP_PASSWORD    - that mailbox's password
+ *   CONTACT_TO_EMAIL - main business inbox (shared with the Contact form)
+ *   CHATBOT_TO_EMAIL - inbox that should receive chat widget enquiries
  */
 
 const DEFAULT_CONTACT_EMAIL = "info@leosproject.ae";
-const DEFAULT_CHATBOT_EMAIL = "leos.project.uae@gmail.com";
+const DEFAULT_CHATBOT_EMAIL = "info@leosproject.ae";
 
 // UAE mobile (5XXXXXXXX) or landline (2/3/4/6/7/9 + 7 digits), with or
 // without a +971/971/0 prefix — same validation the client applies, kept
@@ -64,7 +64,7 @@ export async function POST(request) {
   }
 
   if (!isMailConfigured()) {
-    console.error("Chat widget is not configured: missing GMAIL_APP_PASSWORD.");
+    console.error("Chat widget is not configured: missing SMTP_PASSWORD.");
 
     return NextResponse.json(
       {

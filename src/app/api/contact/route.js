@@ -5,12 +5,12 @@ import { isMailConfigured, sendMail } from "@/lib/mailer";
 /*
  * Handles Contact form submissions from src/components/contact/Contact.js.
  *
- * Sends the enquiry by email via Gmail SMTP (see src/lib/mailer.js).
+ * Sends the enquiry by email via Titan Email SMTP (see src/lib/mailer.js).
  *
  * Required environment variables (see .env.example):
- *   GMAIL_USER         - the Gmail address enquiries are sent from
- *   GMAIL_APP_PASSWORD - a Google "App Password" for that account
- *   CONTACT_TO_EMAIL   - inbox that should receive enquiries
+ *   SMTP_USER        - the Titan mailbox enquiries are sent from
+ *   SMTP_PASSWORD    - that mailbox's password
+ *   CONTACT_TO_EMAIL - inbox that should receive enquiries
  */
 
 const DEFAULT_TO_EMAIL = "info@leosproject.ae";
@@ -42,7 +42,7 @@ export async function POST(request) {
 
   if (!isMailConfigured()) {
     console.error(
-      "Contact form is not configured: missing GMAIL_APP_PASSWORD.",
+      "Contact form is not configured: missing SMTP_PASSWORD.",
     );
 
     return NextResponse.json(
