@@ -46,11 +46,30 @@ export async function sendMail({ to, replyTo, subject, text }) {
   const { user } = getMailConfig();
   const transporter = getTransporter();
 
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: `"LEOS Project Management" <${user}>`,
     to,
     replyTo,
     subject,
     text,
   });
+
+  // A resolved promise only means the SMTP server accepted the *transaction*
+  // — it can still reject individual recipients without throwing. Log the
+  // server's own response so a "successful" send that never actually
+  // arrives can be diagnosed from these details instead of guessed at.
+  console.log("Mail send result:", {
+    messageId: info.messageId,
+    accepted: info.accepted,
+    rejected: info.rejected,
+    response: info.response,
+  });
+
+  if (info.rejected && info.rejected.length > 0) {
+    throw new Error(
+      `Mail server rejected delivery to: ${info.rejected.join(", ")}`,
+    );
+  }
+
+  return info;
 }
