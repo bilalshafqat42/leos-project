@@ -20,6 +20,13 @@ import { isMailConfigured, sendMail } from "@/lib/mailer";
  *   CONTACT_TO_EMAIL - inbox that should receive enquiries
  *   LEAD_API_URL     - Performo endpoint to receive the lead as JSON
  *   LEAD_API_KEY     - Performo API key, sent as the x-api-key header
+ *
+ * Performo's /api/public/submissions accepts:
+ *   { type, name, phone, email, service, message, pageUrl, conversationId,
+ *     campaign }
+ * type: "form" requires name and at least one of phone/email, both of
+ * which this form always has (the single "contact" field is split into
+ * phone or email below based on which format it matches).
  */
 
 const DEFAULT_TO_EMAIL = "info@leosproject.ae";
@@ -52,7 +59,8 @@ export async function POST(request) {
   }
 
   const toEmail = process.env.CONTACT_TO_EMAIL || DEFAULT_TO_EMAIL;
-  const replyTo = EMAIL_PATTERN.test(contact) ? contact : undefined;
+  const contactIsEmail = EMAIL_PATTERN.test(contact);
+  const replyTo = contactIsEmail ? contact : undefined;
 
   const channels = [
     {
@@ -78,10 +86,14 @@ export async function POST(request) {
       configured: isLeadApiConfigured(),
       send: () =>
         sendLead({
-          type: "contact",
+          type: "form",
           message: `New site visit request from ${name} (${contact}) — ${projectType}.\n\n${message}`,
           pageUrl,
           conversationId,
+          name,
+          phone: contactIsEmail ? undefined : contact,
+          email: contactIsEmail ? contact : undefined,
+          service: projectType,
         }),
     },
   ];

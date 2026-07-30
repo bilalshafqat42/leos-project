@@ -16,6 +16,8 @@ const UAE_PHONE_PATTERN = /^(?:\+?971|0)?(?:5\d{8}|[234679]\d{7})$/;
 // so it's unambiguous, roughly matching the international E.164 shape.
 const INTERNATIONAL_PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function isValidPhoneNumber(value) {
   const digits = value.replace(/[\s\-()]/g, "");
   return (
@@ -33,6 +35,10 @@ const STEP_PROMPTS = {
     `Nice to meet you, ${name}. What's the best phone number to reach you on?`,
   invalidPhone:
     "That doesn't look like a valid phone number. For a UAE number, try 050 123 4567 or 04 345 1234. From outside the UAE, include your country code, e.g. +44 7911 123456.",
+  email:
+    "Thanks. What's your email address? This is optional — tap Skip if you'd rather not share it.",
+  invalidEmail:
+    "That doesn't look like a valid email address. Please try again, or tap Skip.",
   service: `Great, thanks. Which service are you looking for? Reply with a number, or tap one below.\n\n${SERVICE_LIST_TEXT}`,
   invalidService: `Please reply with a number from 1 to ${services.length}, or tap one of the services below.`,
 };
@@ -47,7 +53,12 @@ export default function FloatingActions() {
   const [step, setStep] = useState("name");
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState(createInitialMessages);
-  const [formData, setFormData] = useState({ name: "", phone: "", service: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    service: "",
+  });
 
   const bodyRef = useRef(null);
   const inputRef = useRef(null);
@@ -76,7 +87,7 @@ export default function FloatingActions() {
   }, [messages, chatOpen]);
 
   useEffect(() => {
-    if (chatOpen && (step === "name" || step === "phone")) {
+    if (chatOpen && (step === "name" || step === "phone" || step === "email")) {
       inputRef.current?.focus();
     }
   }, [chatOpen, step]);
@@ -92,7 +103,7 @@ export default function FloatingActions() {
 
   const resetChat = useCallback(() => {
     setMessages(createInitialMessages());
-    setFormData({ name: "", phone: "", service: "" });
+    setFormData({ name: "", phone: "", email: "", service: "" });
     setStep("name");
     setDraft("");
   }, []);
@@ -182,9 +193,36 @@ export default function FloatingActions() {
       setMessages((current) => [
         ...current,
         { role: "user", text: value },
-        { role: "bot", text: STEP_PROMPTS.service },
+        { role: "bot", text: STEP_PROMPTS.email },
       ]);
       setFormData((current) => ({ ...current, phone: value }));
+      setStep("email");
+      setDraft("");
+      return;
+    }
+
+    if (step === "email") {
+      if (value.toLowerCase() === "skip") {
+        skipEmail();
+        return;
+      }
+
+      if (!EMAIL_PATTERN.test(value)) {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: value },
+          { role: "bot", text: STEP_PROMPTS.invalidEmail },
+        ]);
+        setDraft("");
+        return;
+      }
+
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: value },
+        { role: "bot", text: STEP_PROMPTS.service },
+      ]);
+      setFormData((current) => ({ ...current, email: value }));
       setStep("service");
       setDraft("");
       return;
@@ -216,14 +254,27 @@ export default function FloatingActions() {
     submitService(title);
   }
 
+  function skipEmail() {
+    setMessages((current) => [
+      ...current,
+      { role: "user", text: "Skip" },
+      { role: "bot", text: STEP_PROMPTS.service },
+    ]);
+    setFormData((current) => ({ ...current, email: "" }));
+    setStep("service");
+    setDraft("");
+  }
+
   const placeholder =
     step === "name"
       ? "Type your name…"
       : step === "phone"
         ? "Type your phone number…"
-        : "Type a number (1-7)…";
+        : step === "email"
+          ? "Type your email, or tap Skip…"
+          : "Type a number (1-7)…";
   const showTextInput =
-    step === "name" || step === "phone" || step === "service";
+    step === "name" || step === "phone" || step === "email" || step === "service";
 
   return (
     <div className={styles.dock}>
@@ -261,6 +312,18 @@ export default function FloatingActions() {
           </div>
 
           <div className={styles.panelFooter}>
+            {step === "email" ? (
+              <div className={styles.quickReplies}>
+                <button
+                  type="button"
+                  onClick={skipEmail}
+                  className={styles.quickReply}
+                >
+                  Skip
+                </button>
+              </div>
+            ) : null}
+
             {step === "service" ? (
               <div className={styles.quickReplies}>
                 {services.map((service) => (

@@ -23,6 +23,11 @@ import { isMailConfigured, sendMail } from "@/lib/mailer";
  *   CHATBOT_TO_EMAIL - inbox that should receive chat widget enquiries
  *   LEAD_API_URL     - Performo endpoint to receive the lead as JSON
  *   LEAD_API_KEY     - Performo API key, sent as the x-api-key header
+ *
+ * Performo's /api/public/submissions accepts:
+ *   { type, name, phone, email, service, message, pageUrl, conversationId,
+ *     campaign }
+ * type: "chat" only requires message; everything else is optional there.
  */
 
 const DEFAULT_CONTACT_EMAIL = "info@leosproject.ae";
@@ -56,6 +61,7 @@ export async function POST(request) {
 
   const name = String(body?.name ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
+  const email = String(body?.email ?? "").trim();
   const service = String(body?.service ?? "").trim();
   const pageUrl = String(body?.pageUrl ?? "").trim() || undefined;
   const conversationId = String(body?.conversationId ?? "").trim() || undefined;
@@ -92,6 +98,7 @@ export async function POST(request) {
           text: [
             `Name: ${name}`,
             `Phone number: ${phone}`,
+            `Email: ${email || "Not provided"}`,
             `Service: ${service}`,
             "",
             "Submitted via the website chat widget.",
@@ -107,6 +114,10 @@ export async function POST(request) {
           message: `New chat enquiry from ${name} (${phone}) — interested in ${service}.`,
           pageUrl,
           conversationId,
+          name,
+          phone,
+          email: email || undefined,
+          service,
         }),
     },
   ];
