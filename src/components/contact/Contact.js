@@ -60,6 +60,7 @@ export default function Contact() {
       contact: formData.get("contact"),
       projectType: formData.get("projectType"),
       message: formData.get("message"),
+      pageUrl: window.location.href,
     };
 
     setSubmitting(true);

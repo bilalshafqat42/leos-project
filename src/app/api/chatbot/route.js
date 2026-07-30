@@ -1,19 +1,28 @@
 import { NextResponse } from "next/server";
 
+import { deliverToChannels } from "@/lib/leadDelivery";
+import { isLeadApiConfigured, sendLead } from "@/lib/leadApi";
 import { isMailConfigured, sendMail } from "@/lib/mailer";
 
 /*
  * Handles submissions from the floating chat widget
  * (src/components/floating-actions/FloatingActions.js).
  *
- * Sends the enquiry by email via Titan Email SMTP (see src/lib/mailer.js).
- * Enquiries go to both the main business inbox and the chat-specific inbox.
+ * Delivers the enquiry two ways, attempted concurrently (see
+ * src/lib/leadDelivery.js):
+ *   - Email via Titan Email SMTP (see src/lib/mailer.js), to both the main
+ *     business inbox and the chat-specific inbox.
+ *   - A JSON POST to Performo (see src/lib/leadApi.js).
+ * Either channel can be configured independently; the request only fails
+ * if every configured channel fails.
  *
  * Required environment variables (see .env.example):
  *   SMTP_USER        - the Titan mailbox enquiries are sent from
  *   SMTP_PASSWORD    - that mailbox's password
  *   CONTACT_TO_EMAIL - main business inbox (shared with the Contact form)
  *   CHATBOT_TO_EMAIL - inbox that should receive chat widget enquiries
+ *   LEAD_API_URL     - Performo endpoint to receive the lead as JSON
+ *   LEAD_API_KEY     - Performo API key, sent as the x-api-key header
  */
 
 const DEFAULT_CONTACT_EMAIL = "info@leosproject.ae";
@@ -48,6 +57,8 @@ export async function POST(request) {
   const name = String(body?.name ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
   const service = String(body?.service ?? "").trim();
+  const pageUrl = String(body?.pageUrl ?? "").trim() || undefined;
+  const conversationId = String(body?.conversationId ?? "").trim() || undefined;
 
   if (!name || !phone || !service) {
     return NextResponse.json(
@@ -63,8 +74,52 @@ export async function POST(request) {
     );
   }
 
-  if (!isMailConfigured()) {
-    console.error("Chat widget is not configured: missing SMTP_PASSWORD.");
+  const toEmails = [
+    ...new Set([
+      process.env.CONTACT_TO_EMAIL || DEFAULT_CONTACT_EMAIL,
+      process.env.CHATBOT_TO_EMAIL || DEFAULT_CHATBOT_EMAIL,
+    ]),
+  ];
+
+  const channels = [
+    {
+      name: "email",
+      configured: isMailConfigured(),
+      send: () =>
+        sendMail({
+          to: toEmails,
+          subject: `New chat enquiry: ${service} — ${name}`,
+          text: [
+            `Name: ${name}`,
+            `Phone number: ${phone}`,
+            `Service: ${service}`,
+            "",
+            "Submitted via the website chat widget.",
+          ].join("\n"),
+        }),
+    },
+    {
+      name: "lead API",
+      configured: isLeadApiConfigured(),
+      send: () =>
+        sendLead({
+          type: "chat",
+          message: `New chat enquiry from ${name} (${phone}) — interested in ${service}.`,
+          pageUrl,
+          conversationId,
+        }),
+    },
+  ];
+
+  const { attempted, anySucceeded } = await deliverToChannels(
+    channels,
+    "chat widget enquiry",
+  );
+
+  if (!attempted) {
+    console.error(
+      "Chat widget is not configured: missing SMTP_PASSWORD and LEAD_API_URL.",
+    );
 
     return NextResponse.json(
       {
@@ -75,33 +130,12 @@ export async function POST(request) {
     );
   }
 
-  const toEmails = [
-    ...new Set([
-      process.env.CONTACT_TO_EMAIL || DEFAULT_CONTACT_EMAIL,
-      process.env.CHATBOT_TO_EMAIL || DEFAULT_CHATBOT_EMAIL,
-    ]),
-  ];
-
-  try {
-    await sendMail({
-      to: toEmails,
-      subject: `New chat enquiry: ${service} — ${name}`,
-      text: [
-        `Name: ${name}`,
-        `Phone number: ${phone}`,
-        `Service: ${service}`,
-        "",
-        "Submitted via the website chat widget.",
-      ].join("\n"),
-    });
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error("Failed to send chat widget email:", error);
-
+  if (!anySucceeded) {
     return NextResponse.json(
       { error: "We couldn't send your enquiry. Please try again shortly." },
       { status: 502 },
     );
   }
+
+  return NextResponse.json({ ok: true });
 }

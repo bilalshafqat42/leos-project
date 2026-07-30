@@ -111,7 +111,7 @@ export default function FloatingActions() {
       const response = await fetch("/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, pageUrl: window.location.href }),
       });
 
       const result = await response.json().catch(() => ({}));
