@@ -25,7 +25,7 @@
   width: 52px;
   height: 52px;
 
-  border: 1px solid var(--leos-gold);
+  /* border: 1px solid var(--leos-gold); */
   border-radius: 50%;
   background: var(--leos-black);
   color: var(--leos-gold);
