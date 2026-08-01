@@ -35,7 +35,7 @@ const SERVICE_LIST_TEXT = services
   .join("\n");
 
 const STEP_PROMPTS = {
-  name: "Hi! I'm the LEOS assistant. What's your name?",
+  name: "Hi! I'm Kai, your LEOS assistant. What's your name?",
   phone: (name) =>
     `Nice to meet you, ${name}. What's the best phone number to reach you on?`,
   invalidPhone:
@@ -55,6 +55,7 @@ function createInitialMessages() {
 export default function FloatingActions() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [showTeaser, setShowTeaser] = useState(false);
   const [step, setStep] = useState("name");
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState(createInitialMessages);
@@ -65,8 +66,14 @@ export default function FloatingActions() {
     service: "",
   });
 
+  const dockRef = useRef(null);
   const bodyRef = useRef(null);
   const inputRef = useRef(null);
+  const chatOpenRef = useRef(chatOpen);
+
+  useEffect(() => {
+    chatOpenRef.current = chatOpen;
+  }, [chatOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,6 +104,64 @@ export default function FloatingActions() {
     }
   }, [chatOpen, step]);
 
+  // Proactively surface Kai when a visitor scrolls to the About section,
+  // once per browser session so it doesn't nag on repeat scroll-throughs.
+  useEffect(() => {
+    const target = document.getElementById("about");
+    if (!target || sessionStorage.getItem(TEASER_SESSION_KEY)) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+
+        sessionStorage.setItem(TEASER_SESSION_KEY, "1");
+        observer.disconnect();
+
+        if (!chatOpenRef.current) setShowTeaser(true);
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-dismiss the teaser if it's left untouched, so it doesn't linger.
+  useEffect(() => {
+    if (!showTeaser) return undefined;
+    const timeout = setTimeout(() => setShowTeaser(false), 9000);
+    return () => clearTimeout(timeout);
+  }, [showTeaser]);
+
+  // Mobile browsers don't shrink `100vh` when the keyboard opens, so a
+  // fixed-position panel sized against it ends up partly covered. Track
+  // the real visible area via visualViewport and shift/resize the panel
+  // to stay fully within it.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const dock = dockRef.current;
+    if (!viewport || !dock || !chatOpen) return undefined;
+
+    function handleViewportChange() {
+      const keyboardInset = Math.max(
+        0,
+        window.innerHeight - viewport.height - viewport.offsetTop,
+      );
+      dock.style.setProperty("--keyboard-inset", `${keyboardInset}px`);
+      dock.style.setProperty("--vv-height", `${viewport.height}px`);
+    }
+
+    handleViewportChange();
+    viewport.addEventListener("resize", handleViewportChange);
+    viewport.addEventListener("scroll", handleViewportChange);
+
+    return () => {
+      viewport.removeEventListener("resize", handleViewportChange);
+      viewport.removeEventListener("scroll", handleViewportChange);
+      dock.style.setProperty("--keyboard-inset", "0px");
+    };
+  }, [chatOpen]);
+
   const scrollToTop = useCallback(() => {
     // An animated scroll (native smooth or a GSAP tween) reliably stalls
     // partway on this site because it has to cross the home page's pinned
@@ -114,7 +179,17 @@ export default function FloatingActions() {
   }, []);
 
   const toggleChat = useCallback(() => {
+    setShowTeaser(false);
     setChatOpen((current) => !current);
+  }, []);
+
+  const openChatFromTeaser = useCallback(() => {
+    setShowTeaser(false);
+    setChatOpen(true);
+  }, []);
+
+  const dismissTeaser = useCallback(() => {
+    setShowTeaser(false);
   }, []);
 
   async function submitEnquiry(data) {
@@ -282,16 +357,50 @@ export default function FloatingActions() {
     step === "name" || step === "phone" || step === "email" || step === "service";
 
   return (
-    <div className={styles.dock}>
+    <div ref={dockRef} className={styles.dock}>
+      {showTeaser && !chatOpen ? (
+        <div className={styles.teaser}>
+          <button
+            type="button"
+            onClick={openChatFromTeaser}
+            className={styles.teaserBubble}
+          >
+            <span className={styles.teaserAvatar}>
+              <Image
+                src="/chat/avatar.png"
+                alt=""
+                width={40}
+                height={40}
+              />
+            </span>
+            <span className={styles.teaserText}>
+              <strong>Kai</strong>
+              <span>Hi! Need help with a renovation project?</span>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={dismissTeaser}
+            className={styles.teaserClose}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+      ) : null}
+
       {chatOpen ? (
-        <div className={styles.panel} role="dialog" aria-label="Chat with LEOS">
+        <div className={styles.panel} role="dialog" aria-label="Chat with Kai, your LEOS assistant">
           <div className={styles.panelHeader}>
-            <div>
-              <p className={styles.panelBrand}>LEOS Assistant</p>
-              <p className={styles.panelStatus}>
-                Usually replies within one business day
-              </p>
-            </div>
+            <Image
+              src="/chat/avatar-full.jpg"
+              alt=""
+              fill
+              sizes="340px"
+              className={styles.panelPhoto}
+            />
+            <div className={styles.panelHeaderOverlay} aria-hidden="true" />
 
             <button
               type="button"
@@ -301,6 +410,13 @@ export default function FloatingActions() {
             >
               <CloseIcon />
             </button>
+
+            <div className={styles.panelHeaderText}>
+              <p className={styles.panelBrand}>Kai</p>
+              <p className={styles.panelStatus}>
+                Usually replies within one business day
+              </p>
+            </div>
           </div>
 
           <div ref={bodyRef} className={styles.panelBody}>
@@ -374,37 +490,39 @@ export default function FloatingActions() {
         </div>
       ) : null}
 
-      <div className={styles.buttons}>
-        <button
-          type="button"
-          aria-label="Back to top"
-          onClick={scrollToTop}
-          className={`${styles.fab} ${showBackToTop ? styles.fabVisible : ""}`}
-          tabIndex={showBackToTop ? 0 : -1}
-        >
-          <ArrowUpIcon />
-        </button>
+      {chatOpen ? null : (
+        <div className={styles.buttons}>
+          <button
+            type="button"
+            aria-label="Back to top"
+            onClick={scrollToTop}
+            className={`${styles.fab} ${showBackToTop ? styles.fabVisible : ""}`}
+            tabIndex={showBackToTop ? 0 : -1}
+          >
+            <ArrowUpIcon />
+          </button>
 
-        <button
-          type="button"
-          aria-label={chatOpen ? "Close chat" : "Chat with us"}
-          aria-expanded={chatOpen}
-          onClick={toggleChat}
-          className={`${styles.fab} ${styles.fabVisible}`}
-        >
-          {chatOpen ? <CloseIcon /> : <ChatIcon />}
-        </button>
+          <button
+            type="button"
+            aria-label="Chat with us"
+            aria-expanded={chatOpen}
+            onClick={toggleChat}
+            className={`${styles.fab} ${styles.fabVisible}`}
+          >
+            <ChatIcon />
+          </button>
 
-        <a
-          href={`https://wa.me/${WHATSAPP_NUMBER}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Chat with LEOS on WhatsApp"
-          className={`${styles.fab} ${styles.fabVisible}`}
-        >
-          <WhatsAppIcon />
-        </a>
-      </div>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chat with LEOS on WhatsApp"
+            className={`${styles.fab} ${styles.fabVisible}`}
+          >
+            <WhatsAppIcon />
+          </a>
+        </div>
+      )}
     </div>
   );
 }
