@@ -1,11 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { services } from "@/data/services";
 import styles from "./FloatingActions.module.css";
 
 const WHATSAPP_NUMBER = "971544339700";
+
+// Session-only flag so the proactive "Kai" greeting bubble surfaces once
+// per visit when the About section scrolls into view, not every time.
+const TEASER_SESSION_KEY = "leos-chat-teaser-shown";
 
 // UAE mobile (5XXXXXXXX) or landline (2/3/4/6/7/9 + 7 digits), with or
 // without a +971/971/0 prefix, e.g. "050 123 4567", "04 345 1234",
